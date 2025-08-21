@@ -50,23 +50,48 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
     load();
   }, [date]);
 
-  const { points, min, max } = useMemo(() => {
-    if (!data) return { points: '', min: 0, max: 1 };
+  const { points, xTicks, yTicks, dims } = useMemo(() => {
+    if (!data) return { points: '', xTicks: [] as {x:number,label:string}[], yTicks: [] as {y:number,label:string}[], dims: {W:540,H:220,M:{left:40,right:12,top:12,bottom:28}} };
+    const W = 540, H = 220, M = { left: 40, right: 12, top: 12, bottom: 28 };
+    const innerW = W - M.left - M.right;
+    const innerH = H - M.top - M.bottom;
     const series = metric === 'visibility' ? (data.visibility.map(v => v / 1000)) : (data as any)[metric] as number[];
-    const xs = data.time.map((_, i) => i);
+    const n = data.time.length;
     const minV = Math.min(...series);
     const maxV = Math.max(...series);
-    const pad = (maxV - minV || 1) * 0.1;
-    const vmin = minV - pad;
-    const vmax = maxV + pad;
-    const width = 520;
-    const height = 200;
-    const pts = xs.map((x, i) => {
-      const px = (x / Math.max(1, xs.length - 1)) * (width - 32) + 16;
-      const py = height - 24 - ((series[i] - vmin) / (vmax - vmin)) * (height - 48);
-      return `${px},${py}`;
-    }).join(' ');
-    return { points: pts, min: vmin, max: vmax };
+    const pad = (maxV - minV || 1) * 0.06;
+    const rawMin = minV - pad;
+    const rawMax = maxV + pad;
+    // nice ticks
+    const targetTicks = 5;
+    const niceStep = (range: number, count: number) => {
+      const raw = range / Math.max(1, count);
+      const pow10 = Math.pow(10, Math.floor(Math.log10(raw)));
+      const err = raw / pow10;
+      const step = err >= 7.5 ? 10 * pow10 : err >= 3 ? 5 * pow10 : err >= 1.5 ? 2 * pow10 : pow10;
+      return step;
+    };
+    const step = niceStep(rawMax - rawMin, targetTicks);
+    const yMin = Math.floor(rawMin / step) * step;
+    const yMax = Math.ceil(rawMax / step) * step;
+    const yScale = (v: number) => H - M.bottom - ((v - yMin) / Math.max(1e-6, (yMax - yMin))) * innerH;
+    const xScale = (i: number) => M.left + (i / Math.max(1, n - 1)) * innerW;
+    const pts = series.map((v, i) => `${xScale(i)},${yScale(v)}`).join(' ');
+    // y ticks
+    const yTicksArr: { y: number; label: string }[] = [];
+    const decimals = step < 1 ? 1 : 0;
+    for (let v = yMin; v <= yMax + 1e-9; v += step) {
+      yTicksArr.push({ y: yScale(v), label: v.toFixed(decimals) });
+    }
+    // x ticks every 3 hours
+    const xTicksArr: { x: number; label: string }[] = [];
+    for (let i = 0; i < n; i++) {
+      const hh = Number(data.time[i].split('T')[1]?.slice(0,2) || '0');
+      if (hh % 3 === 0) {
+        xTicksArr.push({ x: xScale(i), label: `${String(hh).padStart(2,'0')}h` });
+      }
+    }
+    return { points: pts, xTicks: xTicksArr, yTicks: yTicksArr, dims: { W, H, M } };
   }, [data, metric]);
 
   return (
@@ -100,13 +125,26 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-ocean-500" />
               </div>
             ) : data ? (
-              <svg viewBox="0 0 540 220" className="w-full h-56">
+              <svg viewBox={`0 0 ${dims.W} ${dims.H}`} className="w-full h-56">
+                {/* grid: horizontal */}
+                {yTicks.map((t, idx) => (
+                  <line key={`y${idx}`} x1={dims.M.left} x2={dims.W - dims.M.right} y1={t.y} y2={t.y} stroke="#eef2f7" />
+                ))}
+                {/* grid: vertical */}
+                {xTicks.map((t, idx) => (
+                  <line key={`x${idx}`} y1={dims.M.top} y2={dims.H - dims.M.bottom} x1={t.x} x2={t.x} stroke="#f1f5f9" />
+                ))}
                 {/* axes */}
-                <line x1="16" y1="12" x2="16" y2="196" stroke="#e5e7eb" />
-                <line x1="16" y1="196" x2="528" y2="196" stroke="#e5e7eb" />
-                {/* min/max labels */}
-                <text x="20" y="24" fontSize="10" fill="#6b7280">{max.toFixed(1)}</text>
-                <text x="20" y="192" fontSize="10" fill="#6b7280">{min.toFixed(1)}</text>
+                <line x1={dims.M.left} y1={dims.M.top} x2={dims.M.left} y2={dims.H - dims.M.bottom} stroke="#e5e7eb" />
+                <line x1={dims.M.left} y1={dims.H - dims.M.bottom} x2={dims.W - dims.M.right} y2={dims.H - dims.M.bottom} stroke="#e5e7eb" />
+                {/* y tick labels */}
+                {yTicks.map((t, idx) => (
+                  <text key={`yl${idx}`} x={dims.M.left - 6} y={t.y + 3} fontSize="10" fill="#6b7280" textAnchor="end">{t.label}</text>
+                ))}
+                {/* x tick labels */}
+                {xTicks.map((t, idx) => (
+                  <text key={`xl${idx}`} x={t.x} y={dims.H - 6} fontSize="10" fill="#6b7280" textAnchor="middle">{t.label}</text>
+                ))}
                 {/* line */}
                 <polyline fill="none" stroke="#0ea5e9" strokeWidth="2" points={points} />
               </svg>
