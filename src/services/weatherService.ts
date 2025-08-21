@@ -504,3 +504,50 @@ export const getWindSpeedCategory = (speed: number): { icon: string; color: stri
   if (speed < 25) return { icon: '🌬️', color: 'text-yellow-600' }; // Strong breeze
   return { icon: '🌪️', color: 'text-red-600' }; // Very strong wind
 };
+
+// Fetch hourly series for a specific local date (YYYY-MM-DD) for Agde
+export const fetchHourlyForDate = async (localDate: string): Promise<{
+  time: string[];
+  temperature_2m: number[];
+  wind_speed_10m: number[];
+  wind_gusts_10m: number[];
+  wind_direction_10m: number[];
+  relative_humidity_2m: number[];
+  pressure_msl: number[];
+  visibility: number[];
+}> => {
+  const params = new URLSearchParams({
+    latitude: String(AGDE_LAT),
+    longitude: String(AGDE_LON),
+    hourly: [
+      'temperature_2m',
+      'relative_humidity_2m',
+      'rain',
+      'showers',
+      'pressure_msl',
+      'visibility',
+      'wind_speed_10m',
+      'wind_direction_10m',
+      'wind_gusts_10m',
+      'weather_code'
+    ].join(','),
+    timezone: 'Europe/Paris',
+    start_date: localDate,
+    end_date: localDate,
+  });
+  const url = `https://api.open-meteo.com/v1/forecast?${params.toString()}`;
+  const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!res.ok) throw new Error(`Hourly API status ${res.status}`);
+  const data = await res.json();
+  const h = data.hourly || {};
+  return {
+    time: h.time ?? [],
+    temperature_2m: h.temperature_2m ?? [],
+    wind_speed_10m: h.wind_speed_10m ?? [],
+    wind_gusts_10m: h.wind_gusts_10m ?? [],
+    wind_direction_10m: h.wind_direction_10m ?? [],
+    relative_humidity_2m: h.relative_humidity_2m ?? [],
+    pressure_msl: h.pressure_msl ?? [],
+    visibility: h.visibility ?? [],
+  };
+};

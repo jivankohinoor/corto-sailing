@@ -16,6 +16,7 @@ import {
   analyzeSailingConditions,
   getSpecialEvent
 } from '../services/weatherService';
+import DailyValues from './DailyValues';
 
 interface CalendarProps {}
 
@@ -807,6 +808,9 @@ const Calendar: React.FC<CalendarProps> = () => {
                         <div className="text-gray-600">Analyse en cours de génération…</div>
                       )}
                     </div>
+
+                    {/* Valeurs horaires avec graphiques */}
+                    <DailyValues date={selectedDate} />
                   </div>
                 );
               })()}
