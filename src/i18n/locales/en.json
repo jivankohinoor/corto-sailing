@@ -1,0 +1,357 @@
+{
+  "nav": {
+    "services": "Our Services",
+    "extras": "Extras",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "book": "Book Now"
+  },
+  "hero": {
+    "title": "Corto Sailing",
+    "tagline": "Sail, Enjoy, Cheers ⛵🍹",
+    "description": "Discover Agde from the sea with our friendly outings, sailing training and gastronomic experiences aboard the Corto sailboat",
+    "features": {
+      "outings": "Sea outings",
+      "sunsets": "Sunsets",
+      "training": "Sailing training",
+      "capacity": "4 pers. max"
+    },
+    "cta": {
+      "discover": "Discover our outings",
+      "contact": "Contact us"
+    },
+    "offer": " Homemade sangria offered on all our outings (except training)"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "Discover our complete catalog: outings, training, stays and custom packages",
+    "categories": {
+      "outings": {
+        "title": "Sea Outings & Packages",
+        "description": "Navigation, swimming, special events and themed outings"
+      },
+      "accommodation": {
+        "title": "Accommodation & Stays",
+        "description": "Nights aboard and Mediterranean mini-cruises"
+      },
+      "training": {
+        "title": "Sailing Training",
+        "description": "Complete courses for teens & adults, from beginner to autonomy"
+      },
+      "custom": {
+        "title": "Custom Mode",
+        "description": "Flexible and tailor-made programs according to your desires"
+      }
+    },
+    "items": {
+      "discovery": {
+        "title": "Discovery Cruise",
+        "duration": "2h",
+        "description": "Sailing initiation, peaceful navigation, complete safety briefing",
+        "features": [
+          "Sailing basics initiation",
+          "Safe and peaceful navigation",
+          "Detailed safety briefing",
+          "Homemade sangria offered"
+        ]
+      },
+      "sunset": {
+        "title": "Sunset & Aperitif",
+        "duration": "2h30-3h",
+        "description": "Magical sunset with complimentary homemade sangria and convivial atmosphere",
+        "features": [
+          "Sunset navigation",
+          "Homemade sangria offered",
+          "Romantic and convivial atmosphere",
+          "Complimentary memory photos"
+        ]
+      },
+      "dayTrip": {
+        "title": "Anchoring & Swimming Day",
+        "duration": "6-8h",
+        "description": "Navigation, sea swimming, picnic or BBQ aboard",
+        "features": [
+          "Navigation to secret anchorages",
+          "Swimming in crystal waters",
+          "Picnic or BBQ aboard",
+          "Mediterranean coast exploration"
+        ]
+      },
+      "specialEvents": {
+        "title": "Special Evenings",
+        "duration": "Variable",
+        "description": "Themed outings: fireworks, nautical events, fishing...",
+        "features": [
+          "Special events",
+          "Unique atmosphere",
+          "Homemade sangria offered",
+          "Customized"
+        ]
+      },
+      "moonlight": {
+        "title": "Romantic Moonlight Cruise",
+        "duration": "2h",
+        "description": "Night navigation in an intimate and convivial atmosphere",
+        "features": [
+          "Moonlight navigation",
+          "Romantic atmosphere",
+          "Homemade sangria offered",
+          "Unique experience"
+        ]
+      },
+      "fishing": {
+        "title": "Fishing Trip",
+        "duration": "3-4h",
+        "description": "Sea fishing initiation with basic equipment provided",
+        "features": [
+          "Sea fishing initiation",
+          "Basic equipment provided",
+          "Technical advice",
+          "Homemade sangria offered"
+        ]
+      },
+      "fireworks": {
+        "title": "Fireworks Evening",
+        "duration": "3h",
+        "description": "Ideal anchorage to admire July 14th and August 15th fireworks",
+        "features": [
+          "Privileged anchorage",
+          "Stunning fireworks view",
+          "Festive atmosphere",
+          "Homemade sangria offered"
+        ]
+      },
+      "nauticalEvents": {
+        "title": "Nautical Events",
+        "duration": "Variable",
+        "description": "Tall ships, regattas, floating concerts according to calendar",
+        "features": [
+          "Tall ships in Sète",
+          "Regattas and competitions",
+          "Floating concerts",
+          "Unique experiences"
+        ]
+      },
+      "overnight": {
+        "title": "Overnight Stay",
+        "duration": "1 night",
+        "description": "Sleep aboard at the dock for a unique experience (2 people recommended)",
+        "features": [
+          "Unique accommodation",
+          "At Agde dock",
+          "Maritime atmosphere",
+          "Breakfast possible"
+        ]
+      },
+      "weekend": {
+        "title": "Weekend Package",
+        "duration": "2 days + 1 night",
+        "description": "Navigation + night aboard for complete immersion",
+        "features": [
+          "2 days of navigation",
+          "1 night aboard at dock",
+          "Complete immersion",
+          "Unusual experience"
+        ]
+      },
+      "longStays": {
+        "title": "Long Stays",
+        "duration": "3 to 7 days",
+        "description": "Mediterranean mini-cruise: Agde, Sète, Étang de Thau, Catalan coast",
+        "features": [
+          "Mediterranean mini-cruise",
+          "Stopovers: Sète, Marseillan, Thau",
+          "Catalan coast weather permitting",
+          "Authentic maritime adventure"
+        ]
+      },
+      "initiation": {
+        "title": "Sailing Initiation",
+        "duration": "3h",
+        "description": "Learn the basics: safety, maritime vocabulary and basic adjustments",
+        "features": [
+          "Sea safety",
+          "Maritime vocabulary",
+          "Basic adjustments",
+          "Participation certificate"
+        ]
+      },
+      "crewMember": {
+        "title": "Crew Member",
+        "duration": "6h",
+        "description": "Port maneuvers, anchoring, sail management",
+        "features": [
+          "Port maneuvers",
+          "Anchoring techniques",
+          "Sail management",
+          "Intensive practical training"
+        ]
+      },
+      "completeStage": {
+        "title": "Complete Course",
+        "duration": "2-3 days",
+        "description": "Module sequence to acquire solid foundations and become autonomous",
+        "features": [
+          "Progressive modules",
+          "Complete training",
+          "Solid foundations acquired",
+          "Navigation autonomy"
+        ]
+      },
+      "nightNavigation": {
+        "title": "Night Navigation",
+        "duration": "2.5h",
+        "description": "Master night navigation: lights, traffic rules and light landmarks",
+        "features": [
+          "Navigation lights",
+          "Traffic rules",
+          "Light landmarks",
+          "Night safety"
+        ]
+      },
+      "safety": {
+        "title": "Safety & Man Overboard",
+        "duration": "2h",
+        "description": "Essential training: prevention, MOB procedures and VHF radio",
+        "features": [
+          "Risk prevention",
+          "MOB procedures",
+          "VHF radio",
+          "Rescue gestures"
+        ]
+      }
+    },
+    "capacity": "4 pers. max",
+    "learnMore": "Learn more",
+    "boat": {
+      "title": "Our Sailboat Corto",
+      "description": "Discover our beautiful Sangria 7m, a modern and comfortable sailboat perfect for your sea adventures.",
+      "capacity": "4 people max",
+      "type": "Sangria 7m"
+    },
+    "sangriaOffer": {
+      "title": "🍹 Free Homemade Sangria",
+      "description": "On all our outings (except training), enjoy our delicious homemade sangria!"
+    }
+  },
+  "extras": {
+    "title": "Gastronomic Extras",
+    "subtitle": "Enhance your sea outing with our selections of local products and Mediterranean specialties",
+    "items": {
+      "roseTapas": {
+        "name": "Rosé & Tapas",
+        "description": "Selection of local rosé wines accompanied by Mediterranean tapas"
+      },
+      "muscatCheese": {
+        "name": "Muscat & Cheeses",
+        "description": "Muscat de Frontignan and regional cheese platter"
+      },
+      "oysters": {
+        "name": "Bouzigues Oysters & White Wine",
+        "description": "Fresh Bouzigues oysters with regional white wine"
+      },
+      "fruits": {
+        "name": "Fruits & Local Sweets",
+        "description": "Seasonal fruits and sweet specialties from the terroir"
+      }
+    },
+    "terroir": {
+      "title": "🌊 Terroir & Authenticity",
+      "description": "All our extras are carefully selected from local producers to help you discover the authentic flavors of our region"
+    }
+  },
+  "pricing": {
+    "title": "Pricing & Seasonality",
+    "subtitle": "Our rates vary according to the season to offer you the best conditions throughout the year",
+    "structure": {
+      "title": "Pricing Structure",
+      "flatRate": {
+        "title": "Flat Rate",
+        "description": "Price per outing, not per person (4 pers. max)"
+      },
+      "included": {
+        "title": "Included Options",
+        "description": "Skipper, fuel, safety equipment"
+      },
+      "optional": {
+        "title": "Optional Extras",
+        "description": "Gastronomic packages according to your desires"
+      }
+    },
+    "seasons": {
+      "low": {
+        "name": "Low season",
+        "months": "November - March",
+        "description": "Reduced rates to enjoy the sea in complete tranquility"
+      },
+      "mid": {
+        "name": "Mid season",
+        "months": "April - June, September - October",
+        "description": "Ideal conditions with mild climate and fewer crowds"
+      },
+      "high": {
+        "name": "High season",
+        "months": "July - August",
+        "description": "Summer period with maximum activities and entertainment"
+      },
+      "baseRate": "Base rate"
+    },
+    "custom": {
+      "title": "Custom Pricing",
+      "description": "Each outing is unique! Contact us for a personalized quote according to your desires, duration and desired extras.",
+      "quote": "Request a quote",
+      "call": "Call directly"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Ready to embark? Contact us to book your sea outing or get more information",
+    "info": {
+      "title": "Contact Information",
+      "phone": "Phone",
+      "email": "Email",
+      "location": "Home port"
+    },
+    "boat": {
+      "title": "Sailboat Corto",
+      "type": "Type: Sangria 7m",
+      "capacity": "Capacity: 4 people maximum",
+      "base": "Base: Port of Agde",
+      "zone": "Zone: Mediterranean, Agde coast"
+    },
+    "why": {
+      "title": "Why choose Corto Sailing?",
+      "reasons": [
+        "Experienced and passionate skipper",
+        "Homemade sangria offered on all outings",
+        "Small groups for more conviviality",
+        "Local products and authentic terroir",
+        "Certified training for all levels"
+      ]
+    },
+    "form": {
+      "title": "Booking Request",
+      "name": "Full name *",
+      "email": "Email *",
+      "phone": "Phone",
+      "message": "Message *",
+      "namePlaceholder": "Your first and last name",
+      "emailPlaceholder": "your@email.com",
+      "phonePlaceholder": "+33 6 12 34 56 78",
+      "messagePlaceholder": "Describe your project: type of outing, desired dates, number of people, extras...",
+      "submit": "Send request"
+    }
+  },
+  "footer": {
+    "tagline": "Sail, Enjoy, Cheers",
+    "description": "Discover the magic of the Mediterranean aboard our sailboat Corto. Friendly outings, sailing training and gastronomic experiences await you departing from Agde.",
+    "services": "Our Services",
+    "outings": "Sea outings",
+    "accommodation": "Accommodation",
+    "training": "Sailing training",
+    "extras": "Gastronomic extras",
+    "contact": "Contact",
+    "rights": "All rights reserved.",
+    "specs": "Sangria 7m • 4 people max • Professional skipper"
+  }
+}

@@ -1,0 +1,470 @@
+{
+  "nav": {
+    "services": "Nos Services 🌊",
+    "extras": "Extras 🍷",
+    "pricing": "Tarifs 💰",
+    "contact": "Contact 📞",
+    "book": "Réserver 🚤"
+  },
+  "hero": {
+    "title": "Corto Sailing ",
+    "tagline": "Ton aventure maritime commence ici ! ",
+    "description": "Viens découvrir la voile en Méditerranée avec notre magnifique Sangria 7m ! Sorties détente, formations cool et nuitées à bord pour des moments magiques. ",
+    "features": {
+      "outings": "Sorties en mer ",
+      "sunsets": "Couchers de soleil ",
+      "training": "Formation voile ",
+      "capacity": "4 pers. max "
+    },
+    "cta": {
+      "discover": "Découvrir nos sorties ",
+      "contact": "On se parle ? "
+    },
+    "offer": " Sangria maison offerte sur toutes nos sorties (sauf formations) !"
+  },
+  "services": {
+    "title": "Nos Services 🌊",
+    "subtitle": "Découvre notre catalogue de folie : sorties, formations, séjours et formules 100% sur mesure ! ⚓",
+    "categories": {
+      "outings": {
+        "title": "Sorties & Packs en Mer 🚤",
+        "description": "Navigation cool, baignade, événements spéciaux et sorties à thème ! 🏖️"
+      },
+      "accommodation": {
+        "title": "Hébergement & Séjours 🛏️",
+        "description": "Nuitées à bord et mini-croisières méditerranéennes de rêve ! 🌅"
+      },
+      "training": {
+        "title": "Formations Voile ⛵",
+        "description": "Stages de folie pour ados & adultes, du débutant au skipper ! 🎓"
+      },
+      "custom": {
+        "title": "Mode À la Carte ",
+        "description": "Programmes 100% flexibles selon tes envies du moment ! "
+      }
+    },
+    "items": {
+      "discovery": {
+        "title": "Découverte ",
+        "duration": "2h",
+        "description": "Première approche de la voile en mode cool et détendu ! ",
+        "features": [
+          "Initiation voile sympa ",
+          "Navigation zen ",
+          "Briefing sécurité fun ",
+          "Sangria maison offerte "
+        ]
+      },
+      "sunset": {
+        "title": "Sunset & Apéro ",
+        "duration": "2h30-3h",
+        "description": "Le moment magique du coucher de soleil avec apéro de folie ! ",
+        "features": [
+          "Navigation sunset de rêve ",
+          "Apéro à bord stylé ",
+          "Sangria maison offerte ",
+          "Ambiance romantique à souhait "
+        ]
+      },
+      "dayTrip": {
+        "title": "Journée Mouillage & Baignade 🏖️",
+        "duration": "6-8h",
+        "description": "Une journée de folie en mer ! Navigation, baignade et pique-nique dans un cadre de rêve 🌅",
+        "features": [
+          "Navigation complète au top 🧭",
+          "Baignade en mer cristalline 🏊‍♀️",
+          "Pique-nique de ouf inclus 🥪",
+          "Sangria maison offerte 🍹"
+        ]
+      },
+      "moonlight": {
+        "title": "Balade Romantique Clair de Lune 🌙",
+        "duration": "2h",
+        "description": "Navigation nocturne magique dans une ambiance intime de folie ! 💫",
+        "features": [
+          "Navigation au clair de lune 🌙",
+          "Ambiance romantique à fond 💕",
+          "Sangria maison offerte 🍹",
+          "Expérience unique et inoubliable ✨"
+        ]
+      },
+      "fishing": {
+        "title": "Sortie Pêche 🎣",
+        "duration": "3-4h",
+        "description": "Initiation pêche en mer avec tout le matos ! Parfait pour débuter 🐟",
+        "features": [
+          "Initiation pêche en mer cool 🎣",
+          "Tout le matériel fourni 🪝",
+          "Conseils de pro 🎯",
+          "Sangria maison offerte 🍹"
+        ]
+      },
+      "fireworks": {
+        "title": "Soirée Feu d'Artifice 🎆",
+        "duration": "3h",
+        "description": "Le spot parfait pour kiffer les feux d'artifice du 14 juillet et 15 août ! 🎇",
+        "features": [
+          "Mouillage VIP 🏖️",
+          "Vue de dingue sur les feux 🎆",
+          "Ambiance festive au max 🎉",
+          "Sangria maison offerte 🍹"
+        ]
+      },
+      "nauticalEvents": {
+        "title": "Événements Nautiques ⛵",
+        "duration": "Variable",
+        "description": "Grands voiliers, régates, concerts flottants... selon le programme de folie ! 🎪",
+        "features": [
+          "Grands voiliers à Sète 🏴‍☠️",
+          "Régates et compétitions 🏆",
+          "Concerts flottants 🎵",
+          "Expériences de dingue ✨"
+        ]
+      },
+      "overnight": {
+        "title": "Nuitée à bord 🛏️",
+        "duration": "1 nuit",
+        "description": "Dors à bord pour une expérience insolite de folie ! (2 personnes max conseillé) 🌙",
+        "features": [
+          "Hébergement insolite au top 🏠",
+          "Au quai d'Agde tranquille 🌊",
+          "Ambiance maritime authentique ⚓",
+          "Petit-déj' possible 🥐"
+        ]
+      },
+      "weekend": {
+        "title": "Formule Week-end 🎯",
+        "duration": "2 jours + 1 nuit",
+        "description": "Le combo parfait : sorties en mer + nuit à bord pour un week-end de rêve ! 🌟",
+        "features": [
+          "2 jours d'activités au top 🚤",
+          "1 nuit à bord magique 🌙",
+          "Sorties incluses 🌊",
+          "Expérience complète de folie ✨"
+        ]
+      },
+      "initiation": {
+        "title": "Initiation Voile 🎓",
+        "duration": "3h",
+        "description": "Apprends les bases en mode cool : sécurité, vocabulaire marin et premiers réglages ! ⛵",
+        "features": [
+          "Sécurité en mer essentielle 🛡️",
+          "Vocabulaire maritime fun 📚",
+          "Réglages de base pratiques 🔧",
+          "Certificat de participation 📜"
+        ]
+      },
+      "crewMember": {
+        "title": "Équipier 👨‍✈️",
+        "duration": "6h",
+        "description": "Deviens un vrai équipier ! Manœuvres, mouillage, gestion des voiles... tout y passe ! 💪",
+        "features": [
+          "Manœuvres de port au top ⚓",
+          "Techniques de mouillage pro 🎯",
+          "Gestion des voiles stylée ⛵",
+          "Formation pratique intensive 🔥"
+        ]
+      },
+      "completeStage": {
+        "title": "Stage Complet 🏆",
+        "duration": "2-3 jours",
+        "description": "Le stage ultime ! Enchaînement de modules pour devenir autonome et kiffer la voile ! 🚀",
+        "features": [
+          "Modules progressifs au top 📈",
+          "Formation complète de ouf 🎯",
+          "Bases solides acquises 💪",
+          "Autonomie totale en navigation ⛵"
+        ]
+      },
+      "nightNavigation": {
+        "title": "Navigation de Nuit 🌃",
+        "duration": "2h30",
+        "description": "Maîtrise la navigation nocturne comme un chef ! Feux, règles et repères lumineux 🔦",
+        "features": [
+          "Feux de navigation essentiels 💡",
+          "Règles de route nocturnes 🚦",
+          "Repères lumineux pratiques ✨",
+          "Sécurité nocturne au top 🛡️"
+        ]
+      },
+      "safety": {
+        "title": "Sécurité & Homme à la mer 🆘",
+        "duration": "2h",
+        "description": "Formation vitale ! Prévention, procédures MOB et radio VHF pour naviguer serein 🛡️",
+        "features": [
+          "Prévention des risques au top ⚠️",
+          "Procédures MOB efficaces 🏊‍♂️",
+          "Radio VHF maîtrisée 📻",
+          "Gestes de secours essentiels 🚑"
+        ]
+      }
+    },
+    "capacity": "4 pers. max",
+    "learnMore": "En savoir plus",
+    "boat": {
+      "title": "Notre Voilier Corto 🚤",
+      "description": "Notre magnifique Sangria 7,60m t'attend au bord de l'Hérault ! Spot tranquille, sans vis-à-vis, parking gratos. À 15 min à pied du centre-ville et de la gare d'Agde. 🌊",
+      "capacity": "4 personnes max 👥",
+      "type": "Sangria 7,60m ⛵",
+      "location": "Bord de l'Hérault, Agde 🏖️",
+      "advantages": [
+        "Amarrage zen sans vis-à-vis 🧘‍♂️",
+        "Parking gratuit le long de la berge 🆓",
+        "15 min à pied du centre-ville et gare 🚶‍♂️",
+        "Accès rapide à la mer (3-3,5 km) 🏃‍♂️"
+      ]
+    },
+    "customPackages": {
+      "title": "Formules À la Carte 🎯",
+      "subtitle": "Crée ton expérience sur mesure de folie ! ✨",
+      "timing": {
+        "title": "Choisis ton timing ⏰",
+        "options": [
+          "Quelques heures cool 🕰️",
+          "Demi-journée relax 🌅",
+          "Journée entière de ouf 🌆",
+          "Plusieurs jours de rêve 🌴"
+        ]
+      },
+      "activities": {
+        "title": "Programme flexible 🎪",
+        "options": [
+          "Navigation pure et stylée ⛵",
+          "Baignade & détente au max 🏖️",
+          "Apéro en mer de folie 🍹",
+          "Pêche initiation cool 🎣",
+          "Voile pédagogique fun 🎓",
+          "Patrimoine culturel passionnant 🏛️"
+        ]
+      },
+      "extras": {
+        "title": "Extras personnalisés 🎁",
+        "options": [
+          "Gastronomie locale de dingue 🍽️",
+          "Vélos électriques/classiques 🚴‍♂️",
+          "Nuitée au port magique 🌙",
+          "Escales de rêve (Sète, Marseillan, Thau) 🏖️"
+        ]
+      },
+      "experiences": {
+        "title": "Accompagnement sur mesure 👨‍✈️",
+        "options": [
+          "Sortie détente au top 🧘‍♀️",
+          "Cours particuliers voile pro 🎯",
+          "Expérience romantique de folie 💕",
+          "Animation familiale géniale 👨‍👩‍👧‍👦"
+        ]
+      }
+    },
+    "specialEvents": {
+      "title": "Événements Spéciaux & Thématiques 🎪",
+      "subtitle": "Calendrier annuel d'expériences de folie ! 🗓️✨",
+      "summer": {
+        "title": "Été 🌞",
+        "events": [
+          "Concerts flottants de dingue (500m de Corto) 🎵",
+          "Feux d'artifice magiques (14 juillet, 15 août) 🎆",
+          "Joutes nautiques sur l'Hérault 🤺",
+          "Grands voiliers à Sète (Escale à Sète) ⛵"
+        ]
+      },
+      "seasonal": {
+        "title": "Événements saisonniers 🎭",
+        "events": [
+          "Saint-Valentin : pack romantique sunset 💕",
+          "Pâques : sortie familiale + chasse aux œufs 🐰",
+          "Fête de la musique : sortie musicale 🎶",
+          "Vendanges : dégustation vins du Languedoc 🍷",
+          "Noël & Nouvel An : apéros festifs 🎄🥂"
+        ]
+      }
+    },
+    "uniqueAdvantages": {
+      "title": "Avantages Uniques de Corto 🌟",
+      "items": [
+        {
+          "title": "Calme & Intimité 🧘‍♀️",
+          "description": "Pas de tourisme de masse, max 4 personnes pour kiffer tranquille !"
+        },
+        {
+          "title": "Accessibilité 🚂",
+          "description": "Gare proche, parking gratos, vélos dispo... tout est pensé !"
+        },
+        {
+          "title": "Expériences Culturelles 🏛️",
+          "description": "Agde cité grecque, Sète patrimoine maritime... de la culture avec style !"
+        },
+        {
+          "title": "Convivialité 🍻",
+          "description": "Apéros à thème, produits locaux, sangria offerte... ambiance garantie !"
+        },
+        {
+          "title": "Souvenirs Personnalisés 📸",
+          "description": "Photos offertes, possibilité pack cadeau... des souvenirs de ouf !"
+        }
+      ]
+    },
+    "sangriaOffer": {
+      "title": "🍹 Sangria Maison Offerte",
+      "description": "Sur toutes nos sorties (sauf formations), déguste notre délicieuse sangria maison de folie ! 🤤"
+    }
+  },
+  "extras": {
+    "title": "Extras Gastronomiques 🍽️",
+    "subtitle": "Sublime ta sortie en mer avec nos sélections de ouf ! Produits locaux et spécialités méditerranéennes 🌊🍷",
+    "items": {
+      "roseTapas": {
+        "name": "Rosé & Tapas 🍷🥪",
+        "description": "Sélection de rosés locaux de dingue avec tapas méditerranéennes qui déchirent !"
+      },
+      "muscatCheese": {
+        "name": "Muscat & Fromages 🍾🧀",
+        "description": "Muscat de Frontignan et plateau de fromages régionaux... un régal !"
+      },
+      "oysters": {
+        "name": "Huîtres de Bouzigues & Vin blanc 🦐🍷",
+        "description": "Huîtres ultra fraîches de Bouzigues avec vin blanc de la région... le top du top !"
+      },
+      "fruits": {
+        "name": "Fruits & Douceurs locales 🍓🍯",
+        "description": "Fruits de saison et spécialités sucrées du terroir... pour finir en beauté !"
+      }
+    },
+    "terroir": {
+      "title": "🌿 Terroir & Authenticité",
+      "description": "Tous nos extras sont soigneusement sélectionnés chez des producteurs locaux pour te faire découvrir les saveurs authentiques de notre belle région ! 😋"
+    }
+  },
+  "pricing": {
+    "title": "Nos Tarifs 💰",
+    "subtitle": "Tarifs forfaitaires par sortie (pas par personne) avec saisonnalité et tarifs solidaires, formules sur mesure de ouf ! 🎯",
+    "structure": {
+      "title": "Structure Tarifaire 📈",
+      "flatRate": {
+        "title": "Tarif Forfaitaire 🎯",
+        "description": "Prix par sortie, pas par personne (4 pers. max) - ça c'est cool !"
+      },
+      "included": {
+        "title": "Options Incluses ✅",
+        "description": "Skipper, carburant, équipements de sécurité... tout est prévu !"
+      },
+      "optional": {
+        "title": "Extras Optionnels 🎁",
+        "description": "Packs gastronomiques selon tes envies du moment !"
+      }
+    },
+    "seasons": {
+      "low": {
+        "title": "Basse saison (Nov-Mar) ❄️",
+        "discount": "-10% (le bon plan !)"
+      },
+      "mid": {
+        "title": "Moyenne saison (Avr-Juin, Sep-Oct) 🌿",
+        "discount": "Tarifs standards"
+      },
+      "high": {
+        "title": "Haute saison (Juil-Août) 🌞",
+        "discount": "+20% (mais ça vaut le coup !)"
+      }
+    },
+    "options": {
+      "title": "Options supplémentaires 🛠️",
+      "skipper": "Skipper pro : +70€ 👨‍✈️",
+      "fuel": "Carburant : +15€ ⛽",
+      "terroir": "Packs terroir : voir extras 🍽️"
+    },
+    "solidarity": {
+      "title": "Tarifs Solidaires 🤝",
+      "description": "Réduction possible pour bénéficiaires RSA, étudiants ou chômeurs - on pense à tout le monde !",
+      "note": "Sur justificatif 📝"
+    },
+    "payment": {
+      "title": "Moyens de paiement 💳",
+      "methods": ["Espèces 💵", "CB 💳", "PayPal 📱", "Revolut 🚀"]
+    },
+    "custom": {
+      "title": "Tarifs Personnalisés 🎯",
+      "description": "Chaque sortie est unique ! Contacte-nous pour un devis personnalisé selon tes envies, la durée et les extras souhaités. 🚀",
+      "quote": "Demander un devis 📝",
+      "call": "Appeler directement 📞",
+      "note": "Tarifs forfaitaires par sortie, sangria maison incluse (sauf formations) 🍹",
+      "contact": "Contacte-nous pour un devis personnalisé ! 💬"
+    }
+  },
+  "international": {
+    "title": "Accueil International 🌍",
+    "subtitle": "Welcome aboard! Corto Sailing welcomes international guests with style! 🚀",
+    "languages": {
+      "title": "Langues parlées 🗺️",
+      "english": "English spoken 🇬🇧",
+      "spanish": "Documentos en español 🇪🇸",
+      "german": "Dokumente auf Deutsch 🇩🇪"
+    },
+    "accessibility": {
+      "title": "Accessibilité transport 🚂",
+      "train": "Train-friendly : Montpellier/Béziers → Agde 🚄",
+      "walk": "15 min à pied de la gare d'Agde 🚶‍♂️",
+      "parking": "Parking gratuit sur place 🆓"
+    },
+    "terroir": {
+      "title": "Découverte du terroir 🍷",
+      "description": "Gastronomie locale expliquée aux visiteurs internationaux avec passion ! 😋",
+      "specialties": "Vins du Languedoc, huîtres de Bouzigues, produits méditerranéens de ouf ! 🦐🍷"
+    },
+    "payment": {
+      "title": "Paiements internationaux 💳",
+      "methods": "PayPal, Revolut, cartes bancaires internationales acceptées - easy ! 🚀"
+    }
+  },
+  "contact": {
+    "title": "Contacte-nous ! 📞",
+    "subtitle": "Prêt à embarquer ? Contacte-nous pour réserver ta sortie en mer ou avoir plus d'infos ! 🚤✨",
+    "info": {
+      "title": "Infos de Contact 📍",
+      "phone": "Téléphone 📞",
+      "email": "Email 📧",
+      "location": "Port d'attache ⚓"
+    },
+    "boat": {
+      "title": "Voilier Corto 🚤",
+      "type": "Type: Sangria 7m ⛵",
+      "capacity": "Capacité: 4 personnes maximum 👥",
+      "base": "Base: Port d'Agde 🏖️",
+      "zone": "Zone: Méditerranée, côte d'Agde 🌊"
+    },
+    "why": {
+      "title": "Pourquoi choisir Corto Sailing ? 🌟",
+      "reasons": [
+        "Skipper expérimenté et passionné 👨‍✈️",
+        "Sangria maison offerte sur toutes les sorties 🍹",
+        "Groupes réduits pour plus de convivialité 👥",
+        "Produits locaux et terroir authentique 🌿",
+        "Formations certifiées pour tous niveaux 🎓"
+      ]
+    },
+    "form": {
+      "title": "Demande de Réservation 📝",
+      "name": "Nom complet * 👤",
+      "email": "Email * 📧",
+      "phone": "Téléphone 📞",
+      "message": "Message * 💬",
+      "namePlaceholder": "Ton nom et prénom",
+      "emailPlaceholder": "ton@email.com",
+      "phonePlaceholder": "06 12 34 56 78",
+      "messagePlaceholder": "Raconte-nous ton projet : type de sortie, dates souhaitées, nombre de personnes, extras... on a hâte de te lire ! 🚀",
+      "submit": "Envoyer la demande 📨"
+    }
+  },
+  "footer": {
+    "tagline": "Navigue, Kiffe, Trinque ! 🍹⛵",
+    "description": "Découvre la magie de la Méditerranée à bord de notre voilier Corto ! Sorties conviviales, formations voile et expériences gastronomiques t'attendent au départ d'Agde. 🌊✨",
+    "services": "Nos Services 🌊",
+    "outings": "Sorties en mer 🚤",
+    "accommodation": "Hébergement 🛏️",
+    "training": "Formations voile ⛵",
+    "extras": "Extras gastronomiques 🍽️",
+    "contact": "Contact 📞",
+    "rights": "Tous droits réservés. ©",
+    "specs": "Sangria 7m • 4 personnes max • Skipper professionnel 👨‍✈️"
+  }
+}
