@@ -4,6 +4,7 @@
     "extras": "Extras",
     "pricing": "Pricing",
     "contact": "Contact",
+    "calendar": "📅 Calendar",
     "book": "Book Now"
   },
   "hero": {
@@ -229,6 +230,96 @@
       "capacity": "4 people max",
       "type": "Sangria 7m"
     },
+    "customPackages": {
+      "title": "Tailor-made Packages",
+      "subtitle": "Create your fully custom experience",
+      "timing": {
+        "title": "Choose your timing",
+        "options": [
+          "A few hours",
+          "Half-day",
+          "Full day",
+          "Several days"
+        ]
+      },
+      "activities": {
+        "title": "Flexible program",
+        "options": [
+          "Pure sailing",
+          "Swimming & relaxation",
+          "Aperitif at sea",
+          "Fishing initiation",
+          "Educational sailing",
+          "Cultural heritage discovery"
+        ]
+      },
+      "extras": {
+        "title": "Personalized extras",
+        "options": [
+          "Local gastronomy",
+          "Electric/classic bikes",
+          "Overnight stay at the marina",
+          "Stopovers (Sète, Marseillan, Thau)"
+        ]
+      },
+      "experiences": {
+        "title": "Personalized guidance",
+        "options": [
+          "Relaxing sea outing",
+          "Private sailing lesson",
+          "Romantic experience",
+          "Great family activity"
+        ]
+      }
+    },
+    "specialEvents": {
+      "title": "Special & Themed Events",
+      "subtitle": "Annual calendar of unique experiences",
+      "summer": {
+        "title": "Summer",
+        "events": [
+          "Floating concerts (500m from Corto)",
+          "Fireworks (July 14th, August 15th)",
+          "Nautical jousting on the Hérault",
+          "Tall ships in Sète (Escale à Sète)"
+        ]
+      },
+      "seasonal": {
+        "title": "Seasonal events",
+        "events": [
+          "Valentine's Day: romantic sunset",
+          "Easter: family outing + egg hunt",
+          "Fête de la Musique: musical outing",
+          "Harvest: Languedoc wine tasting",
+          "Christmas & New Year: festive aperitifs"
+        ]
+      }
+    },
+    "uniqueAdvantages": {
+      "title": "Corto's Unique Advantages",
+      "items": [
+        {
+          "title": "Calm & Privacy",
+          "description": "No mass tourism, maximum 4 people for a peaceful experience"
+        },
+        {
+          "title": "Accessibility",
+          "description": "Train station nearby, free parking, bikes available"
+        },
+        {
+          "title": "Cultural Experiences",
+          "description": "Agde the Greek city, Sète maritime heritage"
+        },
+        {
+          "title": "Conviviality",
+          "description": "Themed aperitifs, local products, complimentary sangria"
+        },
+        {
+          "title": "Personalized Memories",
+          "description": "Photos included, gift pack possible"
+        }
+      ]
+    },
     "sangriaOffer": {
       "title": "🍹 Free Homemade Sangria",
       "description": "On all our outings (except training), enjoy our delicious homemade sangria!"
@@ -282,19 +373,40 @@
       "low": {
         "name": "Low season",
         "months": "November - March",
-        "description": "Reduced rates to enjoy the sea in complete tranquility"
+        "description": "Reduced rates to enjoy the sea in complete tranquility",
+        "title": "Low season (Nov–Mar) ❄️",
+        "discount": "-10% (great deal!)"
       },
       "mid": {
         "name": "Mid season",
         "months": "April - June, September - October",
-        "description": "Ideal conditions with mild climate and fewer crowds"
+        "description": "Ideal conditions with mild climate and fewer crowds",
+        "title": "Mid season (Apr–Jun, Sep–Oct) 🌿",
+        "discount": "Standard rates"
       },
       "high": {
         "name": "High season",
         "months": "July - August",
-        "description": "Summer period with maximum activities and entertainment"
+        "description": "Summer period with maximum activities and entertainment",
+        "title": "High season (Jul–Aug) 🌞",
+        "discount": "+20% (worth it!)"
       },
       "baseRate": "Base rate"
+    },
+    "options": {
+      "title": "Additional options 🛠️",
+      "skipper": "Pro skipper: +€70 👨‍✈️",
+      "fuel": "Fuel: +€15 ⛽",
+      "terroir": "Terroir packs: see extras 🍽️"
+    },
+    "solidarity": {
+      "title": "Solidarity Rates 🤝",
+      "description": "Discount possible for RSA beneficiaries, students or job seekers — we think of everyone!",
+      "note": "With proof 📝"
+    },
+    "payment": {
+      "title": "Payment methods 💳",
+      "methods": ["Cash 💵", "Card 💳", "PayPal 📱", "Revolut 🚀"]
     },
     "custom": {
       "title": "Custom Pricing",
@@ -353,5 +465,191 @@
     "contact": "Contact",
     "rights": "All rights reserved.",
     "specs": "Sangria 7m • 4 people max • Professional skipper"
+  },
+  "common": {
+    "collapse": "Collapse",
+    "expand": "Expand",
+    "noData": "No data available.",
+    "at": "at"
+  },
+  "calendar": {
+    "ui": {
+      "title": "Calendar & Bookings",
+      "subtitle": "Pick your ideal date with real-time weather!",
+      "locationForecast": "Agde Weather - 14 days"
+    },
+    "hourlyValues": {
+      "title": "Hourly values"
+    },
+    "currentWeather": {
+      "todayTitle": "Today's weather",
+      "nextTitle": "Next weather"
+    },
+    "labels": {
+      "conditions": "Conditions",
+      "temperature": "Temperature",
+      "wind": "Wind (km/h)",
+      "gusts": "Gusts",
+      "beaufort": "Beaufort"
+    },
+    "legend": {
+      "weather": {
+        "tempMaxMin": "Max/min temperature",
+        "wind": "Wind (km/h)",
+        "pressure": "Pressure (hPa)",
+        "windDirection": "Wind direction",
+        "gusts": "Gusts (km/h)"
+      },
+      "conditions": {
+        "title": "Conditions legend"
+      }
+    },
+    "metrics": {
+      "temperature": "Temperature (°C)",
+      "wind": "Wind (km/h)",
+      "gusts": "Gusts (km/h)",
+      "humidity": "Humidity (%)",
+      "pressure": "Pressure (hPa)",
+      "visibility": "Visibility (km)"
+    },
+    "analysis": {
+      "detailed": "Detailed analysis",
+      "lightVisibility": {
+        "title": "Light & Visibility",
+        "sunHours": "Sunny hours",
+        "visibilityAvg": "Average visibility",
+        "humidityAvg": "Average humidity"
+      },
+      "wind": {
+        "title": "Wind of the day",
+        "variability": "Variability",
+        "mean": "Mean",
+        "peak": "Max gust"
+      },
+      "tempComfort": {
+        "title": "Temperature & Comfort",
+        "thermalAmplitude": "Thermal amplitude"
+      },
+      "bestPeriods": {
+        "title": "Best periods"
+      },
+      "intradayEvolution": "Evolution during the day",
+      "generating": "Generating analysis…",
+      "comments": {
+        "wind": {
+          "highGusts": "Strong gusts up to {{gmax}} km/h (≈ {{bft}} Bft)",
+          "strongPeaks": "Sustained wind, peaks at {{wmax}} km/h (≈ {{bft}} Bft)",
+          "moderate": "Moderate wind, mean ~{{wmean}} km/h (≈ {{bft}} Bft)"
+        },
+        "comfort": {
+          "hotHumid": "Heavy heat, stay hydrated",
+          "hotVentilated": "Hot but ventilated, pleasant at sea",
+          "coolLayer": "Cool temperatures, bring a windbreaker",
+          "overallGood": "Overall good comfort"
+        },
+        "overview": {
+          "sunnyClear": "Bright and clear day",
+          "overcast": "Overcast to cloudy, limited sunshine",
+          "mixed": "Alternating sunny spells and cloudy periods"
+        }
+      }
+    },
+    "level": {
+      "excellent": "Excellent",
+      "good": "Good",
+      "moderate": "Moderate",
+      "difficult": "Difficult",
+      "dangerous": "Dangerous"
+    },
+    "period": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening"
+    },
+    "cta": {
+      "bookDate": "Book this date"
+    },
+    "summary": {
+      "beaufort": "Beaufort scale",
+      "windMax": "Max wind"
+    },
+    "noDataForDate": "No weather data available for this date.",
+    "wind": {
+      "directions": {
+        "tramontane": "Tramontane (NW-N)",
+        "marin": "Marin (E-SE)",
+        "autan": "Autan (S-SW)",
+        "nord": "North",
+        "nordEst": "North-East",
+        "est": "East",
+        "sudEst": "South-East",
+        "sud": "South",
+        "ouest": "West",
+        "nordOuest": "North-West"
+      }
+    },
+    "beaufort": {
+      "names": {
+        "0": "Calm",
+        "1": "Light air",
+        "2": "Light breeze",
+        "3": "Gentle breeze",
+        "4": "Moderate breeze",
+        "5": "Fresh breeze",
+        "6": "Strong breeze",
+        "7": "Near gale",
+        "8": "Gale",
+        "9": "Strong gale",
+        "10": "Storm",
+        "11": "Violent storm",
+        "12": "Hurricane"
+      }
+    },
+    "reasons": {
+      "dangerousGusts": "Gusts {{g}} km/h ({{bdesc}})",
+      "difficultWindShowers": "Strong wind/showers ({{bdesc}})",
+      "moderateDynamic": "Dynamic conditions ({{bdesc}})",
+      "excellentBiseClear": "Pleasant breeze and clear sky",
+      "goodRegularFair": "Regular wind and fair weather",
+      "calmVeryLowWind": "Very little wind",
+      "goodFavorable": "Favorable conditions"
+    },
+    "activities": {
+      "dangerous": "⚠️ Sailing prohibited",
+      "difficult": "🌊 Expert sailing",
+      "moderate": "⛵ Sporty sailing",
+      "excellent": "🏖️ Perfect day",
+      "good": "🌅 Leisure sailing",
+      "calm": "🎣 Calm day",
+      "default": "⛵ Sailing",
+      "desc": {
+        "dangerous": "Dangerous conditions (gusts {{gmax}} km/h) - Stay in port ({{bdesc}})",
+        "difficult": "Reserved for experienced sailors ({{bdesc}})",
+        "moderate": "Dynamic conditions ({{bdesc}})",
+        "excellent": "Ideal for sailing + picnic aboard ({{bdesc}})",
+        "good": "Perfect for a relaxing sail ({{bdesc}})",
+        "calm": "Great for fishing or relaxing at anchor ({{bdesc}})",
+        "default": "Favorable conditions for sailing ({{bdesc}})"
+      }
+    },
+    "specialEvents": {
+      "holidays": {
+        "newYear": "🎊 New Year",
+        "valentines": "💕 Valentine's Day",
+        "laborDay": "🌸 Labor Day",
+        "victoryDay": "🇫🇷 Victory in Europe Day",
+        "bastilleDay": "🇫🇷 Bastille Day",
+        "assumption": "⛪ Assumption",
+        "halloween": "🎃 Halloween",
+        "allSaints": "🕯️ All Saints' Day",
+        "armistice": "🇫🇷 Armistice Day",
+        "christmas": "🎄 Christmas",
+        "newYearsEve": "🎆 New Year's Eve"
+      },
+      "season": {
+        "high": "☀️ High sailing season",
+        "normal": "🌊 Sailing season"
+      }
+    }
   }
 }
