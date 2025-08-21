@@ -807,6 +807,69 @@ const Calendar: React.FC<CalendarProps> = () => {
                       ) : (
                         <div className="text-gray-600">Analyse en cours de génération…</div>
                       )}
+
+                      {/* Best periods (Matin / Après-midi / Soir) */}
+                      {weather.analysis?.bestPeriods && (
+                        <div className="mt-6">
+                          <div className="flex items-center mb-3">
+                            <span className="text-lg mr-2">🕒</span>
+                            <h5 className="font-semibold text-gray-900">Meilleures périodes</h5>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            {weather.analysis.bestPeriods.map((p, idx) => {
+                              const level = p.level;
+                              const ui = level === 'excellent' ? { bg: 'bg-green-500 text-white' } :
+                                         level === 'good' ? { bg: 'bg-green-600 text-white' } :
+                                         level === 'moderate' ? { bg: 'bg-orange-500 text-white' } :
+                                         level === 'difficult' ? { bg: 'bg-red-600 text-white' } :
+                                         { bg: 'bg-black text-white' };
+                              const label = level === 'excellent' ? 'Excellent' :
+                                            level === 'good' ? 'Bon' :
+                                            level === 'moderate' ? 'Modéré' :
+                                            level === 'difficult' ? 'Difficile' : 'Dangereux';
+                              return (
+                                <div key={idx} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <div className="font-medium text-gray-900">{p.part}</div>
+                                    <span className={`text-xs px-2 py-1 rounded ${ui.bg}`}>{label}</span>
+                                  </div>
+                                  <div className="text-sm text-gray-700">{p.reason}</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Intra-day windows timeline */}
+                      {weather.analysis?.windows && weather.analysis.windows.length > 0 && (
+                        <div className="mt-6">
+                          <div className="flex items-center mb-3">
+                            <span className="text-lg mr-2">📊</span>
+                            <h5 className="font-semibold text-gray-900">Évolution dans la journée</h5>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            {weather.analysis.windows.map((w, idx) => {
+                              const level = w.level;
+                              const ui = level === 'excellent' ? { bg: 'bg-green-500 text-white' } :
+                                         level === 'good' ? { bg: 'bg-green-600 text-white' } :
+                                         level === 'moderate' ? { bg: 'bg-orange-500 text-white' } :
+                                         level === 'difficult' ? { bg: 'bg-red-600 text-white' } :
+                                         { bg: 'bg-black text-white' };
+                              const t = (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                              return (
+                                <div key={idx} className={`flex items-center justify-between rounded-lg px-3 py-2 border ${level === 'dangerous' ? 'border-black' : 'border-gray-200'} bg-white`}> 
+                                  <div className="flex items-center gap-2">
+                                    <span className={`text-xs px-2 py-1 rounded ${ui.bg}`}>{w.label}</span>
+                                    <span className="text-sm text-gray-800">{t(w.start)} – {t(w.end)}</span>
+                                  </div>
+                                  <div className="text-sm text-gray-700">{w.reason}</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
                     </div>
 
                     {/* Valeurs horaires avec graphiques */}

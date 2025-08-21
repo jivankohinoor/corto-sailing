@@ -10,6 +10,8 @@ export interface WeatherData {
   analysis?: DayAnalysis;
 }
 
+export type DayLevel = 'excellent' | 'good' | 'moderate' | 'difficult' | 'dangerous';
+
 export interface SailingCondition {
   level: 'excellent' | 'good' | 'moderate' | 'difficult' | 'dangerous';
   color: string;
@@ -32,6 +34,20 @@ export interface WeatherResponse {
   };
 }
 
+export interface DayWindow {
+  start: string; // ISO time
+  end: string;   // ISO time
+  level: DayLevel;
+  label: string; // e.g., "Excellent", "Bon"
+  reason: string;
+}
+
+export interface DayPeriodBest {
+  part: 'Matin' | 'Après-midi' | 'Soir';
+  level: DayLevel;
+  reason: string;
+}
+
 export interface DayAnalysis {
   windDirectionMean: number;
   dominantWindName: string;
@@ -43,6 +59,8 @@ export interface DayAnalysis {
   visibilityAvg: number;
   humidityAvg: number;
   thermalAmplitude: number;
+  windows?: DayWindow[];
+  bestPeriods?: DayPeriodBest[];
   comments: {
     wind: string;
     comfort: string;
@@ -223,6 +241,104 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
         if (sun <= 2) return 'Ciel couvert à nuageux, ensoleillement limité';
         return 'Alternance d’éclaircies et de passages nuageux';
       })();
+
+      // Intra-day analysis: hourly levels and optimal windows
+      type Eval = { level: DayLevel; reason: string };
+      const severityOrder: DayLevel[] = ['excellent', 'good', 'moderate', 'difficult', 'dangerous'];
+      const levelLabel = (lv: DayLevel) => (
+        lv === 'excellent' ? 'Excellent' :
+        lv === 'good' ? 'Bon' :
+        lv === 'moderate' ? 'Modéré' :
+        lv === 'difficult' ? 'Difficile' : 'Dangereux'
+      );
+      const evalHour = (i: number): Eval => {
+        const w = d.winds[i] ?? 0;
+        const g = d.gusts[i] ?? 0;
+        const code = d.codes[i] ?? 1;
+        const t = d.temps[i] ?? 20;
+        const b = getBeaufortScale(w);
+        const effectiveWind = Math.max(w, Math.round(0.7 * g));
+        // Dangerous
+        if (g >= 80 || b.scale >= 9) return { level: 'dangerous', reason: `Rafales ${Math.round(g)} km/h (${b.description})` };
+        // Difficult
+        if (b.scale >= 6 || g >= 70 || [80,81,82,85,86,95,96,99].includes(code)) return { level: 'difficult', reason: `Vent fort/averses (${b.description})` };
+        // Moderate
+        if (b.scale >= 4 || effectiveWind >= 20 || g >= 50 || [61,63,65,71,73,75].includes(code)) return { level: 'moderate', reason: `Conditions dynamiques (${b.description})` };
+        // Excellent
+        if (effectiveWind >= 6 && effectiveWind <= 14 && [0,1,2].includes(code) && t > 20) return { level: 'excellent', reason: 'Bise agréable et ciel dégagé' };
+        // Good
+        if ((effectiveWind >= 10 && effectiveWind <= 20 && t > 14) || ([0,1,2].includes(code) && t >= 18)) return { level: 'good', reason: 'Vent régulier et temps clément' };
+        // Calm defaults to moderate leisure
+        if (effectiveWind < 6 || b.scale <= 1) return { level: 'moderate', reason: 'Très peu de vent' };
+        return { level: 'good', reason: 'Conditions favorables' };
+      };
+
+      // Build contiguous windows (06:00–22:00 local)
+      const windows: DayWindow[] = (() => {
+        const startHour = 6, endHour = 22; // exclusive end
+        const res: DayWindow[] = [];
+        if (!d.times.length) return res;
+        let currentStartIdx: number | null = null;
+        let currentLevel: DayLevel | null = null;
+        let currentReason = '';
+        for (let i = 0; i < d.times.length; i++) {
+          const h = Number(d.times[i].split('T')[1]?.slice(0,2) || '0');
+          if (h < startHour || h >= endHour) continue;
+          const ev = evalHour(i);
+          if (currentLevel == null) {
+            currentStartIdx = i;
+            currentLevel = ev.level;
+            currentReason = ev.reason;
+          } else if (ev.level !== currentLevel) {
+            // close previous
+            const startISO = d.times[currentStartIdx!];
+            const endISO = d.times[i];
+            res.push({ start: startISO, end: endISO, level: currentLevel, label: levelLabel(currentLevel), reason: currentReason });
+            // start new
+            currentStartIdx = i;
+            currentLevel = ev.level;
+            currentReason = ev.reason;
+          }
+        }
+        // close at endHour if open
+        if (currentLevel != null && currentStartIdx != null) {
+          // find last index within endHour
+          let lastIdx = currentStartIdx;
+          for (let j = currentStartIdx + 1; j < d.times.length; j++) {
+            const hh = Number(d.times[j].split('T')[1]?.slice(0,2) || '0');
+            if (hh >= endHour) break;
+            lastIdx = j;
+          }
+          const endISO = d.times[lastIdx];
+          res.push({ start: d.times[currentStartIdx], end: endISO, level: currentLevel, label: levelLabel(currentLevel), reason: currentReason });
+        }
+        return res;
+      })();
+
+      // Best per day part
+      const bestPeriods: DayPeriodBest[] = (() => {
+        const parts: Array<{ name: 'Matin'|'Après-midi'|'Soir'; from: number; to: number; }> = [
+          { name: 'Matin', from: 6, to: 12 },
+          { name: 'Après-midi', from: 12, to: 18 },
+          { name: 'Soir', from: 18, to: 22 },
+        ];
+        const pick = (from: number, to: number): DayPeriodBest => {
+          let best: Eval | null = null;
+          for (let i = 0; i < d.times.length; i++) {
+            const h = Number(d.times[i].split('T')[1]?.slice(0,2) || '0');
+            if (h < from || h >= to) continue;
+            const e = evalHour(i);
+            if (!best) best = e;
+            else if (severityOrder.indexOf(e.level) < severityOrder.indexOf(best.level)) best = e;
+          }
+          const level = best ? best.level : 'moderate';
+          return { part: 'Matin', level, reason: best?.reason || 'Peu de données' } as DayPeriodBest;
+        };
+        return parts.map(p => {
+          const res = pick(p.from, p.to);
+          return { part: p.name, level: res.level, reason: res.reason };
+        });
+      })();
       return {
         date,
         temperature_2m_max: isFinite(tmax) ? tmax : 20,
@@ -243,6 +359,8 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
           visibilityAvg,
           humidityAvg,
           thermalAmplitude,
+          windows,
+          bestPeriods,
           comments: {
             wind: windComment,
             comfort: comfortComment,

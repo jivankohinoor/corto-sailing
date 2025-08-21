@@ -38,6 +38,14 @@ npm run preview
 - **SEO optimization** for both languages
 - **Persistent language preference** in localStorage
 
+### ⛵ Weather Analysis (Agde)
+- **Daily analysis** with dominant wind, variability, sunny hours, visibility, humidity, thermal amplitude
+- **Intra-day best periods**: Morning / Afternoon / Evening with level and reason
+- **Contiguous time windows** (06:00–22:00): timeline of conditions with start–end and rationale
+- **Safety levels** aligned with Beaufort and gusts: Excellent, Bon, Modéré, Difficile, Dangereux
+- UI located in `src/components/Calendar.tsx` under “Analyse détaillée”
+- Engine in `src/services/weatherService.ts` (types: `DayWindow`, `DayPeriodBest`, `DayLevel`)
+
 ### Services
 - **Sailing Packages**: Discovery, Sunset & Aperitif, Day Anchoring, Special Events
 - **Unique Accommodation**: Overnight stay, Weekend package
@@ -93,6 +101,7 @@ src/
 │   ├── Header.tsx  # Navigation with language switcher
 │   ├── Hero.tsx    # Animated hero section
 │   ├── Services.tsx# Service cards with i18n
+│   ├── Calendar.tsx# Calendar with detailed weather analysis (best periods, windows)
 │   ├── Extras.tsx  # Gastronomic extras
 │   ├── Pricing.tsx # Seasonal pricing
 │   ├── Contact.tsx # Contact form
@@ -105,11 +114,23 @@ src/
 │       ├── fr.json# French translations
 │       └── en.json# English translations
 ├── data/          # Static data (deprecated)
+├── services/      # Domain services
+│   └── weatherService.ts # Weather fetch + analysis (windows, best periods)
 ├── types/         # TypeScript types
 ├── App.tsx        # Main component
 ├── main.tsx       # Entry point
 └── index.css      # Global styles
 ```
+
+## 🧠 Weather Analysis Logic
+
+- Uses Open‑Meteo hourly data to compute per‑hour sailing level considering:
+  - Wind (10m), gusts, Beaufort scale, weather codes, temperature
+- Derives:
+  - `bestPeriods`: best level for Matin / Après‑midi / Soir
+  - `windows`: contiguous segments between 06:00–22:00 with level + reason
+- Display:
+  - “Meilleures périodes” cards and “Évolution dans la journée” timeline in `Calendar.tsx`
 
 ## 🌊 Corto Sailing
 
