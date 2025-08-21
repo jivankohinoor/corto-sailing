@@ -7,6 +7,7 @@ export interface WeatherData {
   wind_gusts_10m_max: number;
   wind_direction_10m_dominant: number;
   weather_code: number;
+  analysis?: DayAnalysis;
 }
 
 export interface SailingCondition {
@@ -31,43 +32,228 @@ export interface WeatherResponse {
   };
 }
 
-// Agde coordinates: 43.3167, 3.4667
-const AGDE_LAT = 43.3167;
-const AGDE_LON = 3.4667;
+export interface DayAnalysis {
+  windDirectionMean: number;
+  dominantWindName: string;
+  windVariability: number;
+  windMean: number;
+  windPeak: number;
+  windPeakTime?: string;
+  sunnyHours: number;
+  visibilityAvg: number;
+  humidityAvg: number;
+  thermalAmplitude: number;
+  comments: {
+    wind: string;
+    comfort: string;
+    overview: string;
+  };
+}
+
+// Agde coordinates (as per provided query): 43.3108, 3.4758
+const AGDE_LAT = 43.3108;
+const AGDE_LON = 3.4758;
 
 export const fetchWeatherData = async (): Promise<WeatherData[]> => {
   try {
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${AGDE_LAT}&longitude=${AGDE_LON}&daily=temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant,weather_code&timezone=Europe%2FParis&forecast_days=14`;
-    
+    // Use the REST equivalent of the provided Python query and include hourly weather_code
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${AGDE_LAT}&longitude=${AGDE_LON}` +
+      `&hourly=temperature_2m,relative_humidity_2m,rain,showers,pressure_msl,visibility,wind_speed_10m,wind_direction_10m,wind_gusts_10m,weather_code` +
+      `&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,pressure_msl,wind_speed_10m,wind_gusts_10m,wind_direction_10m` +
+      `&forecast_days=14&timezone=Europe%2FParis`;
+
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: { 'Accept': 'application/json' },
     });
-    
+
     if (!response.ok) {
       console.warn(`Weather API responded with status: ${response.status}`);
       return getMockWeatherData();
     }
-    
-    const data: WeatherResponse = await response.json();
-    
-    if (!data.daily || !data.daily.time) {
-      console.warn('Invalid weather data structure received');
+
+    const data = await response.json() as any;
+
+    if (!data.hourly || !Array.isArray(data.hourly.time)) {
+      console.warn('Invalid hourly weather data structure received');
       return getMockWeatherData();
     }
-    
-    return data.daily.time.map((date, index) => ({
-      date,
-      temperature_2m_max: data.daily.temperature_2m_max[index] ?? 20,
-      temperature_2m_min: data.daily.temperature_2m_min[index] ?? 15,
-      surface_pressure: 1013 + Math.random() * 20, // Open-Meteo daily doesn't provide pressure; keep synthetic for UI
-      wind_speed_10m_max: data.daily.wind_speed_10m_max[index] ?? 10,
-      wind_gusts_10m_max: data.daily.wind_gusts_10m_max[index] ?? ((data.daily.wind_speed_10m_max[index] ?? 10) * 1.3),
-      wind_direction_10m_dominant: data.daily.wind_direction_10m_dominant[index] ?? 180,
-      weather_code: data.daily.weather_code[index] ?? 1,
-    }));
+
+    // Aggregate hourly to daily summaries used by the Calendar
+    type Acc = Record<string, {
+      times: string[];
+      temps: number[];
+      winds: number[];
+      gusts: number[];
+      dirs: number[];
+      pressures: number[];
+      codes: number[];
+      visibility: number[];
+      humidity: number[];
+      rain: number[];
+      showers: number[];
+    }>;
+
+    const acc: Acc = {};
+    const times: string[] = data.hourly.time;
+    const temps: number[] = data.hourly.temperature_2m ?? [];
+    const winds: number[] = data.hourly.wind_speed_10m ?? [];
+    const gusts: number[] = data.hourly.wind_gusts_10m ?? [];
+    const dirs: number[] = data.hourly.wind_direction_10m ?? [];
+    const pressures: number[] = data.hourly.pressure_msl ?? [];
+    const codes: number[] = data.hourly.weather_code ?? [];
+    const visibility: number[] = data.hourly.visibility ?? [];
+    const humidity: number[] = data.hourly.relative_humidity_2m ?? [];
+    const rain: number[] = data.hourly.rain ?? [];
+    const showers: number[] = data.hourly.showers ?? [];
+
+    for (let i = 0; i < times.length; i++) {
+      const t = times[i];
+      // Use local date string YYYY-MM-DD (API already returns local when timezone is set)
+      const dateStr = t.split('T')[0];
+      if (!acc[dateStr]) acc[dateStr] = { times: [], temps: [], winds: [], gusts: [], dirs: [], pressures: [], codes: [], visibility: [], humidity: [], rain: [], showers: [] };
+      acc[dateStr].times.push(t);
+      if (temps[i] != null) acc[dateStr].temps.push(temps[i]);
+      if (winds[i] != null) acc[dateStr].winds.push(winds[i]);
+      if (gusts[i] != null) acc[dateStr].gusts.push(gusts[i]);
+      if (dirs[i] != null) acc[dateStr].dirs.push(dirs[i]);
+      if (pressures[i] != null) acc[dateStr].pressures.push(pressures[i]);
+      if (codes[i] != null) acc[dateStr].codes.push(codes[i]);
+      if (visibility[i] != null) acc[dateStr].visibility.push(visibility[i]);
+      if (humidity[i] != null) acc[dateStr].humidity.push(humidity[i]);
+      if (rain[i] != null) acc[dateStr].rain.push(rain[i]);
+      if (showers[i] != null) acc[dateStr].showers.push(showers[i]);
+    }
+
+    const toCircularMean = (angles: number[]): number => {
+      if (!angles.length) return 180;
+      const rad = angles.map(a => (a * Math.PI) / 180);
+      const x = rad.reduce((s, a) => s + Math.cos(a), 0) / rad.length;
+      const y = rad.reduce((s, a) => s + Math.sin(a), 0) / rad.length;
+      const ang = Math.atan2(y, x) * 180 / Math.PI;
+      return (ang + 360) % 360;
+    };
+
+    const pickDominant = (arr: number[]): number => {
+      if (!arr.length) return 1;
+      const counts = new Map<number, number>();
+      for (const v of arr) counts.set(v, (counts.get(v) ?? 0) + 1);
+      let best = arr[0], bestC = 0;
+      for (const [k, c] of counts) { if (c > bestC) { best = k; bestC = c; } }
+      return best;
+    };
+
+    const stdDevAngles = (angles: number[], meanAngle: number): number => {
+      if (angles.length <= 1) return 0;
+      const meanRad = (meanAngle * Math.PI) / 180;
+      const diffs = angles.map(a => {
+        let d = ((a * Math.PI) / 180) - meanRad;
+        // wrap to [-pi, pi]
+        while (d > Math.PI) d -= 2 * Math.PI;
+        while (d < -Math.PI) d += 2 * Math.PI;
+        return d;
+      });
+      const variance = diffs.reduce((s, d) => s + d * d, 0) / (diffs.length - 1);
+      return Math.sqrt(variance) * 180 / Math.PI;
+    };
+
+    const windNameFromDir = (deg: number): string => {
+      if (deg >= 290 || deg < 20) return 'Tramontane (NW-N)';
+      if (deg >= 40 && deg < 140) return 'Marin (E-SE)';
+      if (deg >= 200 && deg < 260) return 'Autan (S-SW)';
+      // fallback by quadrant
+      if (deg < 40) return 'Nord';
+      if (deg < 90) return 'Nord-Est';
+      if (deg < 140) return 'Est';
+      if (deg < 200) return 'Sud-Est';
+      if (deg < 260) return 'Sud';
+      if (deg < 290) return 'Ouest';
+      return 'Nord-Ouest';
+    };
+
+    const days = Object.keys(acc).sort();
+    const daily: WeatherData[] = days.map(date => {
+      const d = acc[date];
+      const tmax = Math.max(...d.temps);
+      const tmin = Math.min(...d.temps);
+      const wmax = Math.max(...d.winds);
+      const gmax = Math.max(...d.gusts);
+      const dir = toCircularMean(d.dirs);
+      const pressure = d.pressures.length ? d.pressures.reduce((a,b)=>a+b,0)/d.pressures.length : 1013;
+      const code = pickDominant(d.codes);
+      const wmean = d.winds.length ? d.winds.reduce((a,b)=>a+b,0)/d.winds.length : NaN;
+      // peak gust time
+      let peakTime: string | undefined;
+      if (d.gusts.length && d.times.length) {
+        const idx = d.gusts.indexOf(gmax);
+        if (idx >= 0 && d.times[idx]) peakTime = d.times[idx];
+      }
+      const visibilityAvg = d.visibility.length ? d.visibility.reduce((a,b)=>a+b,0)/d.visibility.length : NaN;
+      const humidityAvg = d.humidity.length ? d.humidity.reduce((a,b)=>a+b,0)/d.humidity.length : NaN;
+      const sunnyHours = d.codes.reduce((cnt, c, i) => {
+        const isSunny = c === 0 || c === 1 || c === 2; // clear/partly
+        const noRain = (d.rain?.[i] ?? 0) === 0 && (d.showers?.[i] ?? 0) === 0;
+        return cnt + (isSunny && noRain ? 1 : 0);
+      }, 0);
+      const variability = stdDevAngles(d.dirs, dir);
+      const domName = windNameFromDir(dir);
+
+      const thermalAmplitude = isFinite(tmax) && isFinite(tmin) ? (tmax - tmin) : NaN;
+
+      const windComment = (() => {
+        const b = getBeaufortScale(wmax);
+        if (gmax >= 70) return `Rafales fortes jusqu'à ${Math.round(gmax)} km/h (≈ ${b.scale} Bft)`;
+        if (wmax >= 30) return `Vent soutenu, pics à ${Math.round(wmax)} km/h (≈ ${b.scale} Bft)`;
+        return `Vent modéré, moyen ~${Math.round(wmean || 0)} km/h (≈ ${b.scale} Bft)`;
+      })();
+
+      const comfortComment = (() => {
+        const avgT = ((isFinite(tmax) ? tmax : 0) + (isFinite(tmin) ? tmin : 0)) / 2;
+        const hum = humidityAvg;
+        if (tmax >= 30 && (hum ?? 0) >= 60) return 'Chaleur lourde, hydratation conseillée';
+        if (tmax >= 28 && (hum ?? 0) <= 40 && wmean >= 15) return 'Chaud mais ventilé, agréable en mer';
+        if (avgT < 20) return 'Températures fraîches, prévoyez une couche coupe-vent';
+        return 'Confort globalement bon';
+      })();
+
+      const overview = (() => {
+        const visKm = isFinite(visibilityAvg) ? (visibilityAvg / 1000) : NaN;
+        const sun = sunnyHours;
+        if (sun >= 8 && (visKm >= 20 || isNaN(visKm))) return 'Belle journée lumineuse et dégagée';
+        if (sun <= 2) return 'Ciel couvert à nuageux, ensoleillement limité';
+        return 'Alternance d’éclaircies et de passages nuageux';
+      })();
+      return {
+        date,
+        temperature_2m_max: isFinite(tmax) ? tmax : 20,
+        temperature_2m_min: isFinite(tmin) ? tmin : 15,
+        surface_pressure: isFinite(pressure) ? pressure : 1013,
+        wind_speed_10m_max: isFinite(wmax) ? wmax : 10,
+        wind_gusts_10m_max: isFinite(gmax) ? gmax : (isFinite(wmax) ? wmax * 1.3 : 13),
+        wind_direction_10m_dominant: isFinite(dir) ? dir : 180,
+        weather_code: code ?? 1,
+        analysis: {
+          windDirectionMean: dir,
+          dominantWindName: domName,
+          windVariability: variability,
+          windMean: isFinite(wmean) ? wmean : NaN,
+          windPeak: isFinite(gmax) ? gmax : NaN,
+          windPeakTime: peakTime,
+          sunnyHours,
+          visibilityAvg,
+          humidityAvg,
+          thermalAmplitude,
+          comments: {
+            wind: windComment,
+            comfort: comfortComment,
+            overview,
+          }
+        }
+      };
+    });
+
+    // Keep only the next 14 days (already the case) and return
+    return daily;
   } catch (error) {
     console.error('Error fetching weather data:', error);
     return getMockWeatherData();

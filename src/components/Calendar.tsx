@@ -737,6 +737,76 @@ const Calendar: React.FC<CalendarProps> = () => {
                         </p>
                       )}
                     </div>
+
+                    {/* Analyse détaillée (winds, sun, visibility, etc.) */}
+                    <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-xl font-bold text-gray-900">🔎 Analyse détaillée</h4>
+                        {weather.analysis && (
+                          <div className="text-sm text-gray-600">{new Date(weather.date).toLocaleDateString('fr-FR')}</div>
+                        )}
+                      </div>
+
+                      {weather.analysis ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                          {/* Vent */}
+                          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                            <div className="flex items-center mb-2">
+                              <Wind className="h-5 w-5 text-blue-600 mr-2" />
+                              <span className="font-medium text-gray-900">Vent de la journée</span>
+                            </div>
+                            <div className="space-y-1 text-gray-800">
+                              <div className="text-lg font-semibold">
+                                {weather.analysis.dominantWindName}
+                                <span className="ml-2 text-sm text-gray-600">({Math.round(weather.analysis.windDirectionMean)}°)</span>
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Variabilité:</span> ±{Math.round(weather.analysis.windVariability)}°
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Moyen:</span> {isFinite(weather.analysis.windMean) ? Math.round(weather.analysis.windMean) : '–'} km/h
+                              </div>
+                              <div className="text-sm">
+                                <span className="font-medium">Rafale max:</span> {isFinite(weather.analysis.windPeak) ? Math.round(weather.analysis.windPeak) : '–'} km/h
+                                {weather.analysis.windPeakTime && (
+                                  <span className="text-gray-600"> à {new Date(weather.analysis.windPeakTime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                )}
+                              </div>
+                              <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.wind}</div>
+                            </div>
+                          </div>
+
+                          {/* Ensoleillement / Visibilité */}
+                          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                            <div className="flex items-center mb-2">
+                              <span className="text-yellow-500 text-xl mr-2">☀️</span>
+                              <span className="font-medium text-gray-900">Lumière & Visibilité</span>
+                            </div>
+                            <div className="space-y-1 text-gray-800">
+                              <div className="text-sm"><span className="font-medium">Heures ensoleillées:</span> {weather.analysis.sunnyHours}</div>
+                              <div className="text-sm"><span className="font-medium">Visibilité moyenne:</span> {isFinite(weather.analysis.visibilityAvg) ? `${Math.round(weather.analysis.visibilityAvg / 1000)} km` : '–'}</div>
+                              <div className="text-sm"><span className="font-medium">Humidité moyenne:</span> {isFinite(weather.analysis.humidityAvg) ? `${Math.round(weather.analysis.humidityAvg)}%` : '–'}</div>
+                              <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.overview}</div>
+                            </div>
+                          </div>
+
+                          {/* Température / Confort */}
+                          <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+                            <div className="flex items-center mb-2">
+                              <Thermometer className="h-5 w-5 text-red-500 mr-2" />
+                              <span className="font-medium text-gray-900">Température & Confort</span>
+                            </div>
+                            <div className="space-y-1 text-gray-800">
+                              <div className="text-lg font-semibold">{weather.temperature_2m_max.toFixed(1)}° / {weather.temperature_2m_min.toFixed(1)}°</div>
+                              <div className="text-sm"><span className="font-medium">Amplitude thermique:</span> {isFinite(weather.analysis.thermalAmplitude) ? `${weather.analysis.thermalAmplitude.toFixed(1)}°` : '–'}</div>
+                              <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.comfort}</div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-gray-600">Analyse en cours de génération…</div>
+                      )}
+                    </div>
                   </div>
                 );
               })()}
