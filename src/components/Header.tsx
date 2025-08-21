@@ -4,15 +4,37 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from './LanguageSwitcher';
 
-const Header: React.FC = () => {
+interface HeaderProps {
+  currentPage?: string;
+  setCurrentPage?: (page: 'home' | 'calendar') => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ currentPage = 'home', setCurrentPage }) => {
   const { t } = useTranslation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+  const handleNavigation = (page: 'home' | 'calendar', href?: string) => {
+    if (setCurrentPage) {
+      setCurrentPage(page);
+    }
+    if (href && page === 'home') {
+      // Scroll to section after a small delay to ensure page is rendered
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    }
+    setIsMenuOpen(false);
+  };
+
   const navItems = [
-    { href: '#services', label: t('nav.services') },
-    { href: '#extras', label: t('nav.extras') },
-    { href: '#tarifs', label: t('nav.pricing') },
-    { href: '#contact', label: t('nav.contact') }
+    { href: '#services', label: t('nav.services'), page: 'home' as const },
+    { href: '#extras', label: t('nav.extras'), page: 'home' as const },
+    { href: '#tarifs', label: t('nav.pricing'), page: 'home' as const },
+    { href: '#contact', label: t('nav.contact'), page: 'home' as const },
+    { href: '', label: '📅 Calendrier', page: 'calendar' as const }
   ];
 
   return (
@@ -20,8 +42,9 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           {/* Logo */}
-          <motion.div 
+          <motion.button 
             className="flex items-center space-x-2"
+            onClick={() => handleNavigation('home')}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
@@ -29,38 +52,40 @@ const Header: React.FC = () => {
             <Anchor className="h-8 w-8 text-ocean-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Corto Sailing</h1>
-              <p className="text-sm text-ocean-600 font-medium">{t('hero.tagline')}</p>
+              <p className="text-sm text-ocean-600 font-medium">Ton aventure maritime commence ici ! 🌊</p>
             </div>
-          </motion.div>
+          </motion.button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navItems.map((item, index) => (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                className="text-gray-700 hover:text-ocean-600 font-medium transition-colors duration-200"
+              <motion.button
+                key={item.href || item.label}
+                onClick={() => handleNavigation(item.page, item.href)}
+                className={`text-gray-700 hover:text-ocean-600 font-medium transition-colors duration-200 ${
+                  currentPage === item.page ? 'text-ocean-600 border-b-2 border-ocean-600' : ''
+                }`}
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
                 {item.label}
-              </motion.a>
+              </motion.button>
             ))}
           </nav>
 
           {/* Language Switcher & CTA */}
           <div className="hidden md:flex items-center space-x-4">
             <LanguageSwitcher />
-            <motion.a
-              href="#contact"
+            <motion.button
+              onClick={() => handleNavigation('home', '#contact')}
               className="btn-primary"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
               {t('nav.book')}
-            </motion.a>
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -86,25 +111,25 @@ const Header: React.FC = () => {
           >
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  className="text-gray-700 hover:text-ocean-600 font-medium transition-colors duration-200"
-                  onClick={() => setIsMenuOpen(false)}
+                <button
+                  key={item.href || item.label}
+                  onClick={() => handleNavigation(item.page, item.href)}
+                  className={`text-left text-gray-700 hover:text-ocean-600 font-medium transition-colors duration-200 ${
+                    currentPage === item.page ? 'text-ocean-600' : ''
+                  }`}
                 >
                   {item.label}
-                </a>
+                </button>
               ))}
               <div className="flex justify-center mb-4">
                 <LanguageSwitcher />
               </div>
-              <a
-                href="#contact"
+              <button
+                onClick={() => handleNavigation('home', '#contact')}
                 className="btn-primary text-center"
-                onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.book')}
-              </a>
+              </button>
             </nav>
           </motion.div>
         )}
