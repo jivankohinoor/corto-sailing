@@ -58,7 +58,8 @@ const Calendar: React.FC<CalendarProps> = () => {
   };
 
   const getWeatherForDate = (date: Date): WeatherData | null => {
-    const dateStr = date.toISOString().split('T')[0];
+    // Use local date (Europe/Paris) to match Open-Meteo 'daily.time' values, avoid UTC shift
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
     const exact = weatherData.find(w => w.date === dateStr) || null;
     if (exact) return exact;
     // Fallback: if it's today and the API starts at tomorrow, use the first available forecast
@@ -141,7 +142,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
                     <Thermometer className="h-3 w-3 text-red-500 mr-1" />
-                    <span>{Math.round(weather.temperature_2m_max)}°</span>
+                    <span>{weather.temperature_2m_max.toFixed(1)}°</span>
                   </div>
                   <div className="flex items-center">
                     <Wind className="h-3 w-3 text-blue-500 mr-1" />
@@ -160,7 +161,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <span className="text-gray-500">{Math.round(weather.temperature_2m_min)}°</span>
+                    <span className="text-gray-500">{weather.temperature_2m_min.toFixed(1)}°</span>
                   </div>
                   <div className="flex items-center">
                     <span className="text-sm">{getWindDirectionIcon(weather.wind_direction_10m_dominant)}</span>
@@ -258,7 +259,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                       <div className="text-sm opacity-90">Conditions</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold mb-1">{Math.round(currentWeather.temperature_2m_max)}°</div>
+                      <div className="text-2xl font-bold mb-1">{currentWeather.temperature_2m_max.toFixed(1)}°</div>
                       <div className="text-sm opacity-90">Température</div>
                     </div>
                     <div className="text-center">
@@ -677,7 +678,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                           <span className="font-medium">Température</span>
                         </div>
                         <div className="text-2xl font-bold text-gray-900">
-                          {Math.round(weather.temperature_2m_max)}° / {Math.round(weather.temperature_2m_min)}°
+                          {weather.temperature_2m_max.toFixed(1)}° / {weather.temperature_2m_min.toFixed(1)}°
                         </div>
                       </div>
                       

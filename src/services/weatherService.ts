@@ -60,13 +60,13 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
     
     return data.daily.time.map((date, index) => ({
       date,
-      temperature_2m_max: data.daily.temperature_2m_max[index] || 20,
-      temperature_2m_min: data.daily.temperature_2m_min[index] || 15,
-      surface_pressure: 1013 + Math.random() * 20, // Generate realistic pressure since API doesn't provide it
-      wind_speed_10m_max: data.daily.wind_speed_10m_max[index] || 10,
-      wind_gusts_10m_max: data.daily.wind_gusts_10m_max[index] || (data.daily.wind_speed_10m_max[index] || 10) * 1.3,
-      wind_direction_10m_dominant: data.daily.wind_direction_10m_dominant[index] || 180,
-      weather_code: data.daily.weather_code[index] || 1,
+      temperature_2m_max: data.daily.temperature_2m_max[index] ?? 20,
+      temperature_2m_min: data.daily.temperature_2m_min[index] ?? 15,
+      surface_pressure: 1013 + Math.random() * 20, // Open-Meteo daily doesn't provide pressure; keep synthetic for UI
+      wind_speed_10m_max: data.daily.wind_speed_10m_max[index] ?? 10,
+      wind_gusts_10m_max: data.daily.wind_gusts_10m_max[index] ?? ((data.daily.wind_speed_10m_max[index] ?? 10) * 1.3),
+      wind_direction_10m_dominant: data.daily.wind_direction_10m_dominant[index] ?? 180,
+      weather_code: data.daily.weather_code[index] ?? 1,
     }));
   } catch (error) {
     console.error('Error fetching weather data:', error);
