@@ -17,10 +17,13 @@ import {
   getSpecialEvent
 } from '../services/weatherService';
 import DailyValues from './DailyValues';
+import { useTranslation } from 'react-i18next';
 
 interface CalendarProps {}
 
 const Calendar: React.FC<CalendarProps> = () => {
+  const { t, i18n } = useTranslation();
+  const locale = i18n.language || 'fr-FR';
   const [currentDate, setCurrentDate] = useState(new Date());
   const [weatherData, setWeatherData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -200,12 +203,15 @@ const Calendar: React.FC<CalendarProps> = () => {
     return days;
   };
 
-  const monthNames = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
-    'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
-  ];
-
-  const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  // Localized weekday labels (Mon-Sun)
+  const weekdayShorts = React.useMemo(() => {
+    const baseMonday = new Date(2023, 0, 2); // 2023-01-02 is a Monday
+    return Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(baseMonday);
+      d.setDate(baseMonday.getDate() + i);
+      return d.toLocaleDateString(locale, { weekday: 'short' });
+    });
+  }, [locale]);
 
   return (
     <section className="py-20 bg-gradient-to-br from-ocean-50 to-sunset-50">
@@ -217,14 +223,14 @@ const Calendar: React.FC<CalendarProps> = () => {
           transition={{ duration: 0.6 }}
         >
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            📅 Calendrier & Réservations
+            📅 {t('calendar.ui.title')}
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
-            Choisis ta date idéale avec la météo en temps réel ! 🌊⛵
+            {t('calendar.ui.subtitle')}
           </p>
           <div className="flex items-center justify-center text-ocean-600 mb-8">
             <MapPin className="h-5 w-5 mr-2" />
-            <span className="font-medium">Météo Agde - 14 jours</span>
+            <span className="font-medium">{t('calendar.ui.locationForecast')}</span>
           </div>
           
           {/* Current Day Weather */}
@@ -252,28 +258,28 @@ const Calendar: React.FC<CalendarProps> = () => {
                   transition={{ duration: 0.6, delay: 0.3 }}
                 >
                   <h2 className="text-2xl font-bold mb-2">
-                    🌤️ {isToday ? 'Météo du jour' : 'Prochaine météo'} - {weatherDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
+                    🌤️ {isToday ? t('calendar.currentWeather.todayTitle') : t('calendar.currentWeather.nextTitle')} - {weatherDate.toLocaleDateString(locale, { weekday: 'long', day: 'numeric', month: 'long' })}
                   </h2>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-4">
                     <div className="text-center">
                       <div className="text-2xl mb-1">{getWeatherIcon(currentWeather.weather_code)}</div>
-                      <div className="text-sm opacity-90">Conditions</div>
+                      <div className="text-sm opacity-90">{t('calendar.labels.conditions')}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">{currentWeather.temperature_2m_max.toFixed(1)}°</div>
-                      <div className="text-sm opacity-90">Température</div>
+                      <div className="text-sm opacity-90">{t('calendar.labels.temperature')}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">{Math.round(currentWeather.wind_speed_10m_max)}</div>
-                      <div className="text-sm opacity-90">Vent (km/h)</div>
+                      <div className="text-sm opacity-90">{t('calendar.labels.wind')}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">{Math.round(currentWeather.wind_gusts_10m_max)}</div>
-                      <div className="text-sm opacity-90">Rafales</div>
+                      <div className="text-sm opacity-90">{t('calendar.labels.gusts')}</div>
                     </div>
                     <div className="text-center">
                       <div className="text-2xl font-bold mb-1">{conditions.beaufortScale}</div>
-                      <div className="text-sm opacity-90">Beaufort</div>
+                      <div className="text-sm opacity-90">{t('calendar.labels.beaufort')}</div>
                     </div>
                   </div>
                   <div className="text-center">
@@ -304,7 +310,7 @@ const Calendar: React.FC<CalendarProps> = () => {
               </button>
               
               <h2 className="text-2xl font-bold text-gray-900">
-                {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
+                {currentDate.toLocaleDateString(locale, { month: 'long', year: 'numeric' })}
               </h2>
               
               <button
@@ -319,23 +325,23 @@ const Calendar: React.FC<CalendarProps> = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
               <div className="flex items-center text-sm">
                 <Thermometer className="h-4 w-4 text-red-500 mr-2" />
-                <span>Température max/min</span>
+                <span>{t('calendar.legend.weather.tempMaxMin')}</span>
               </div>
               <div className="flex items-center text-sm">
                 <Wind className="h-4 w-4 text-blue-500 mr-2" />
-                <span>Vent (km/h)</span>
+                <span>{t('calendar.legend.weather.wind')}</span>
               </div>
               <div className="flex items-center text-sm">
                 <Gauge className="h-4 w-4 text-purple-500 mr-2" />
-                <span>Pression (hPa)</span>
+                <span>{t('calendar.legend.weather.pressure')}</span>
               </div>
               <div className="flex items-center text-sm">
                 <span className="text-lg mr-2">🧭</span>
-                <span>Direction vent</span>
+                <span>{t('calendar.legend.weather.windDirection')}</span>
               </div>
               <div className="flex items-center text-sm col-span-2 md:col-span-1">
                 <Wind className="h-4 w-4 text-gray-600 mr-2" />
-                <span>Rafales (km/h)</span>
+                <span>{t('calendar.legend.weather.gusts')}</span>
               </div>
             </div>
 
@@ -343,20 +349,20 @@ const Calendar: React.FC<CalendarProps> = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
               {/* Color legend */}
               <div className="bg-gray-50 rounded-lg p-4">
-                <div className="font-medium mb-2">Légende conditions</div>
+                <div className="font-medium mb-2">{t('calendar.legend.conditions.title')}</div>
                 <div className="flex flex-wrap gap-2 text-xs">
                   {/* Excellent */}
                   <div className="relative group inline-block">
-                    <span className="px-2 py-1 rounded bg-green-500 text-white inline-flex items-center gap-1">🌟 Excellent</span>
+                    <span className="px-2 py-1 rounded bg-green-500 text-white inline-flex items-center gap-1">🌟 {t('calendar.level.excellent')}</span>
                     <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-900 text-[12px] shadow-xl rounded-md px-3 py-2 border w-[260px]">
                       <div className="font-semibold flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 17l-5 3 1.9-5.9L4 9h6L12 3l2 6h6l-4.9 5.1L17 20z"/></svg>
-                        <span>Excellent</span>
+                        <span>{t('calendar.level.excellent')}</span>
                       </div>
                       <ul className="space-y-1">
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>Vent efficace ~6–14 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2 4 4 12-12"/></svg><span>Ciel clair/peu nuageux</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 20V10a6 6 0 1112 0v10"/></svg><span>T ≥ 20°C</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>{t('calendar.legend.conditions.tooltip.excellent.wind')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12l2-2 4 4 12-12"/></svg><span>{t('calendar.legend.conditions.tooltip.excellent.sky')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 20V10a6 6 0 1112 0v10"/></svg><span>{t('calendar.legend.conditions.tooltip.excellent.temp')}</span></li>
                       </ul>
                       <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                     </div>
@@ -364,16 +370,16 @@ const Calendar: React.FC<CalendarProps> = () => {
 
                   {/* Bon */}
                   <div className="relative group inline-block">
-                    <span className="px-2 py-1 rounded bg-green-600 text-white inline-flex items-center gap-1">✅ Bon</span>
+                    <span className="px-2 py-1 rounded bg-green-600 text-white inline-flex items-center gap-1">✅ {t('calendar.level.good')}</span>
                     <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-900 text-[12px] shadow-xl rounded-md px-3 py-2 border w-[260px]">
                       <div className="font-semibold flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4 text-green-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
-                        <span>Bon</span>
+                        <span>{t('calendar.level.good')}</span>
                       </div>
                       <ul className="space-y-1">
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h14"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>Vent efficace ~10–20 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/></svg><span>Beau temps doux</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 20V10a6 6 0 1112 0v10"/></svg><span>T ≥ 14°C</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h14"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>{t('calendar.legend.conditions.tooltip.good.wind')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="5"/></svg><span>{t('calendar.legend.conditions.tooltip.good.sky')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 20V10a6 6 0 1112 0v10"/></svg><span>{t('calendar.legend.conditions.tooltip.good.temp')}</span></li>
                       </ul>
                       <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                     </div>
@@ -381,16 +387,16 @@ const Calendar: React.FC<CalendarProps> = () => {
 
                   {/* Modéré */}
                   <div className="relative group inline-block">
-                    <span className="px-2 py-1 rounded bg-orange-500 text-white inline-flex items-center gap-1">⚠️ Modéré</span>
+                    <span className="px-2 py-1 rounded bg-orange-500 text-white inline-flex items-center gap-1">⚠️ {t('calendar.level.moderate')}</span>
                     <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-900 text-[12px] shadow-xl rounded-md px-3 py-2 border w-[280px]">
                       <div className="font-semibold flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4 text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                        <span>Modéré</span>
+                        <span>{t('calendar.level.moderate')}</span>
                       </div>
                       <ul className="space-y-1">
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>Force ≥ 4 ou vent effectif ≥ 20 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h13"/><path d="M3 6h9"/><path d="M3 18h9"/></svg><span>Rafales ≥ 50 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 16.58A5 5 0 0018 9h-1.26A8 8 0 103 16.25"/></svg><span>Pluie notable possible</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>{t('calendar.legend.conditions.tooltip.moderate.wind')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h13"/><path d="M3 6h9"/><path d="M3 18h9"/></svg><span>{t('calendar.legend.conditions.tooltip.moderate.gusts')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 16.58A5 5 0 0018 9h-1.26A8 8 0 103 16.25"/></svg><span>{t('calendar.legend.conditions.tooltip.moderate.rain')}</span></li>
                       </ul>
                       <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                     </div>
@@ -398,16 +404,16 @@ const Calendar: React.FC<CalendarProps> = () => {
 
                   {/* Difficile */}
                   <div className="relative group inline-block">
-                    <span className="px-2 py-1 rounded bg-red-600 text-white inline-flex items-center gap-1">🔴 Difficile</span>
+                    <span className="px-2 py-1 rounded bg-red-600 text-white inline-flex items-center gap-1">🔴 {t('calendar.level.difficult')}</span>
                     <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-900 text-[12px] shadow-xl rounded-md px-3 py-2 border w-[300px]">
                       <div className="font-semibold flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                        <span>Difficile</span>
+                        <span>{t('calendar.level.difficult')}</span>
                       </div>
                       <ul className="space-y-1">
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>Force ≥ 6</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h15"/><path d="M3 6h11"/><path d="M3 18h11"/><path d="M20 12l2 0"/></svg><span>Rafales ≥ 70 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 16s3-3 9-3 9 3 9 3"/><path d="M3 20s3-3 9-3 9 3 9 3"/><path d="M3 12s3-3 9-3 9 3 9 3"/></svg><span>Averses / coups de vent</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>{t('calendar.legend.conditions.tooltip.difficult.force')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h15"/><path d="M3 6h11"/><path d="M3 18h11"/><path d="M20 12l2 0"/></svg><span>{t('calendar.legend.conditions.tooltip.difficult.gusts')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 16s3-3 9-3 9 3 9 3"/><path d="M3 20s3-3 9-3 9 3 9 3"/><path d="M3 12s3-3 9-3 9 3 9 3"/></svg><span>{t('calendar.legend.conditions.tooltip.difficult.showers')}</span></li>
                       </ul>
                       <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                     </div>
@@ -415,16 +421,16 @@ const Calendar: React.FC<CalendarProps> = () => {
 
                   {/* Dangereux */}
                   <div className="relative group inline-block">
-                    <span className="px-2 py-1 rounded bg-black text-white inline-flex items-center gap-1">⚫ Dangereux</span>
+                    <span className="px-2 py-1 rounded bg-black text-white inline-flex items-center gap-1">⚫ {t('calendar.level.dangerous')}</span>
                     <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-900 text-[12px] shadow-xl rounded-md px-3 py-2 border w-[300px]">
                       <div className="font-semibold flex items-center gap-2 mb-1">
                         <svg className="w-4 h-4 text-black" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86L1.82 18a1 1 0 00.86 1.5h18.64a1 1 0 00.86-1.5L13.71 3.86a1 1 0 00-1.72 0z"/></svg>
-                        <span>Dangereux</span>
+                        <span>{t('calendar.level.dangerous')}</span>
                       </div>
                       <ul className="space-y-1">
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>Force ≥ 9</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h17"/><path d="M3 6h13"/><path d="M3 18h13"/><path d="M21 12l2 0"/></svg><span>Rafales ≥ 80 km/h</span></li>
-                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 4L4 13"/><path d="M7 15h2v2"/><path d="M15 7h2v2"/></svg><span>Restez au port</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg><span>{t('calendar.legend.conditions.tooltip.dangerous.force')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12h17"/><path d="M3 6h13"/><path d="M3 18h13"/><path d="M21 12l2 0"/></svg><span>{t('calendar.legend.conditions.tooltip.dangerous.gusts')}</span></li>
+                        <li className="flex items-center gap-2"><svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M13 4L4 13"/><path d="M7 15h2v2"/><path d="M15 7h2v2"/></svg><span>{t('calendar.legend.conditions.tooltip.dangerous.stayInPort')}</span></li>
                       </ul>
                       <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                     </div>
@@ -492,65 +498,48 @@ const Calendar: React.FC<CalendarProps> = () => {
                     if (r.min && !r.max) return `≥~${Math.round(r.min * 1.4)} km/h`;
                     return '<~2 km/h';
                   };
-                  const beaufortNameFR = (b: number): string => {
-                    switch (b) {
-                      case 0: return 'Calme';
-                      case 1: return 'Très légère brise';
-                      case 2: return 'Légère brise';
-                      case 3: return 'Petite brise';
-                      case 4: return 'Jolie brise';
-                      case 5: return 'Bonne brise';
-                      case 6: return 'Vent frais';
-                      case 7: return 'Grand frais';
-                      case 8: return 'Coup de vent';
-                      case 9: return 'Fort coup de vent';
-                      case 10: return 'Tempête';
-                      case 11: return 'Violente tempête';
-                      default: return 'Ouragan';
-                    }
-                  };
                   // iconography now handled with inline SVG in tooltips
                   return (
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <div className="font-medium flex items-center gap-2">
-                          <span>Échelle de Beaufort</span>
+                          <span>{t('calendar.beaufort.title')}</span>
                           {/* Info tooltip about rules */}
                           <div className="relative group inline-block">
                             <span className="cursor-help text-gray-500">ℹ️</span>
                             <div className="pointer-events-none absolute z-30 hidden group-hover:block top-full left-0 mt-2 bg-white text-gray-900 text-[12px] shadow-2xl rounded-lg px-4 py-3 border w-[420px]">
-                              <div className="font-semibold mb-2">Règles d’affichage et conseils</div>
+                              <div className="font-semibold mb-2">{t('calendar.beaufort.infoTitle')}</div>
                               <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">Couleurs</div>
+                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">{t('calendar.beaufort.colorsTitle')}</div>
                                   <ul className="space-y-1 text-[12px]">
-                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#bfdbfe"/></svg><span>0–1: bleu (calme)</span></li>
-                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#22c55e"/></svg><span>2–3: vert (favorable)</span></li>
-                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#f97316"/></svg><span>4–5: orange (modéré)</span></li>
-                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#dc2626"/></svg><span>6–7: rouge (difficile)</span></li>
-                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#000000"/></svg><span>≥8: noir (très fort)</span></li>
+                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#bfdbfe"/></svg><span>{t('calendar.beaufort.colors.range01')}</span></li>
+                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#22c55e"/></svg><span>{t('calendar.beaufort.colors.range23')}</span></li>
+                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#f97316"/></svg><span>{t('calendar.beaufort.colors.range45')}</span></li>
+                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#dc2626"/></svg><span>{t('calendar.beaufort.colors.range67')}</span></li>
+                                    <li className="flex items-center gap-2"><svg className="w-3 h-3" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4" fill="#000000"/></svg><span>{t('calendar.beaufort.colors.range8plus')}</span></li>
                                   </ul>
                                 </div>
                                 <div>
-                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">Rafales</div>
+                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">{t('calendar.beaufort.gustsTitle')}</div>
                                   <ul className="space-y-1 text-[12px]">
                                     <li className="flex items-center gap-2">
                                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h13"/><path d="M3 6h9"/><path d="M3 18h9"/><path d="M19 12l2 0"/></svg>
-                                      <span>Modéré: ≥50 km/h</span>
+                                      <span>{t('calendar.beaufort.gusts.moderate')}</span>
                                     </li>
                                     <li className="flex items-center gap-2">
                                       <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h15"/><path d="M3 6h11"/><path d="M3 18h11"/><path d="M20 12l2 0"/></svg>
-                                      <span>Difficile: ≥70 km/h</span>
+                                      <span>{t('calendar.beaufort.gusts.difficult')}</span>
                                     </li>
                                     <li className="flex items-center gap-2">
                                       <svg className="w-4 h-4 text-red-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h17"/><path d="M3 6h13"/><path d="M3 18h13"/><path d="M21 12l2 0"/></svg>
-                                      <span>Dangereux: ≥80 km/h</span>
+                                      <span>{t('calendar.beaufort.gusts.dangerous')}</span>
                                     </li>
                                   </ul>
-                                  <div className="mt-2 text-[11px] text-gray-600">La couleur reste basée sur la <span className="font-medium">Force</span> (vent moyen).</div>
+                                  <div className="mt-2 text-[11px] text-gray-600">{t('calendar.beaufort.colorNote')}</div>
                                 </div>
                                 <div className="col-span-2 border-t pt-2">
-                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">Direction locale</div>
+                                  <div className="text-xs font-semibold uppercase tracking-wide mb-1 text-gray-600">{t('calendar.beaufort.localDirectionTitle')}</div>
                                   <div className="flex items-start gap-2">
                                     <svg className="w-5 h-5 mt-0.5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6l3 6-6 0 3-6z"/></svg>
                                     <div>
@@ -559,10 +548,10 @@ const Calendar: React.FC<CalendarProps> = () => {
                                     </div>
                                   </div>
                                   <div className="mt-1 grid grid-cols-2 gap-1 text-[11px] text-gray-600">
-                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M5 9l7-7 7 7"/></svg> Tramontane: N–NW (terre)</div>
-                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V2"/><path d="M19 15l-7 7-7-7"/></svg> Marin: SE (marin, houle)</div>
-                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M15 5l7 7-7 7"/></svg> Ponant/Cers: W (mer courte)</div>
-                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12H2"/><path d="M9 19L2 12l7-7"/></svg> Levant: E (humide)</div>
+                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v20"/><path d="M5 9l7-7 7 7"/></svg> {t('calendar.beaufort.local.tramontane')}</div>
+                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22V2"/><path d="M19 15l-7 7-7-7"/></svg> {t('calendar.beaufort.local.marin')}</div>
+                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20"/><path d="M15 5l7 7-7 7"/></svg> {t('calendar.beaufort.local.ponant')}</div>
+                                    <div className="flex items-center gap-1"><svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12H2"/><path d="M9 19L2 12l7-7"/></svg> {t('calendar.beaufort.local.levant')}</div>
                                   </div>
                                 </div>
                               </div>
@@ -570,14 +559,14 @@ const Calendar: React.FC<CalendarProps> = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="text-xs text-gray-600">Actuel: Force {currentBft} · {cond.beaufortDescription}</div>
+                        <div className="text-xs text-gray-600">{t('calendar.beaufort.current', { bft: currentBft, desc: cond.beaufortDescription })}</div>
                       </div>
                       <div className="grid gap-1" style={{ gridTemplateColumns: 'repeat(13, minmax(0, 1fr))' }}>
                         {segments.map((b) => (
                           <div key={b} className="relative group">
                             <div
                               className={`h-6 flex items-center justify-center text-[10px] rounded ${colorFor(b)} ${b === currentBft ? 'ring-2 ring-ocean-500' : ''}`}
-                              aria-label={`Force ${b} ${beaufortNameFR(b)} vent ${beaufortKmhRange(b).label} km/h, rafales ${gustText(b)}`}
+                              aria-label={t('calendar.beaufort.segmentAria', { b, name: t(`calendar.beaufort.names.${b}`), range: beaufortKmhRange(b).label, gust: gustText(b) })}
                             >
                               {b}
                             </div>
@@ -585,23 +574,23 @@ const Calendar: React.FC<CalendarProps> = () => {
                             <div className="pointer-events-none absolute z-20 hidden group-hover:block bottom-full left-1/2 -translate-x-1/2 mb-1 bg-white text-gray-800 text-[11px] shadow-lg rounded px-2 py-2 border min-w-[200px]">
                               <div className="font-medium flex items-center gap-1">
                                 <svg className="w-4 h-4 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h18"/><path d="M3 6h10"/><path d="M3 18h14"/></svg>
-                                <span>Force {b} · {beaufortNameFR(b)}</span>
+                                <span>{t('calendar.beaufort.forceLabel', { b, name: t(`calendar.beaufort.names.${b}`) })}</span>
                               </div>
                               <div className="flex items-center gap-1 opacity-80 mt-0.5">
                                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12h16"/><path d="M4 8h10"/><path d="M4 16h12"/></svg>
-                                <span>Vent moyen: {beaufortKmhRange(b).label} km/h</span>
+                                <span>{t('calendar.beaufort.meanWind', { range: beaufortKmhRange(b).label })}</span>
                               </div>
                               <div className="flex items-center gap-1 opacity-80 mt-0.5">
                                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12h15"/><path d="M3 6h11"/><path d="M3 18h11"/><path d="M20 12l2 0"/></svg>
-                                <span>Rafales: {gustText(b)}</span>
+                                <span>{t('calendar.beaufort.gustsLabel', { gust: gustText(b) })}</span>
                               </div>
                               <div className="flex items-center gap-1 opacity-80 mt-0.5">
                                 <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6l3 6-6 0 3-6z"/></svg>
-                                <span>Direction: {directionCategory(w.wind_direction_10m_dominant).name}</span>
+                                <span>{t('calendar.beaufort.directionLabel', { name: directionCategory(w.wind_direction_10m_dominant).name })}</span>
                               </div>
                               <div className="mt-1 flex items-center gap-2">
                                 <span className={`inline-block w-3 h-3 rounded-full ${colorFor(b).split(' ')[0]}`} />
-                                <span className="opacity-80">Couleur: {colorName(b)}</span>
+                                <span className="opacity-80">{t('calendar.beaufort.colorLabel', { color: colorName(b) })}</span>
                               </div>
                               <div className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-x-8 border-x-transparent border-t-8 border-t-white" />
                             </div>
@@ -616,7 +605,7 @@ const Calendar: React.FC<CalendarProps> = () => {
 
             {/* Day Headers */}
             <div className="grid grid-cols-7 gap-1 mb-2">
-              {dayNames.map(day => (
+              {weekdayShorts.map((day: string) => (
                 <div key={day} className="h-10 flex items-center justify-center font-medium text-gray-700 bg-gray-100">
                   {day}
                 </div>
@@ -651,7 +640,7 @@ const Calendar: React.FC<CalendarProps> = () => {
               transition={{ duration: 0.6 }}
             >
               <h3 className="text-xl font-bold text-gray-900 mb-4">
-                📅 {selectedDate.toLocaleDateString('fr-FR', { 
+                📅 {selectedDate.toLocaleDateString(locale, { 
                   weekday: 'long', 
                   year: 'numeric', 
                   month: 'long', 
@@ -662,7 +651,7 @@ const Calendar: React.FC<CalendarProps> = () => {
               {(() => {
                 const weather = getWeatherForDate(selectedDate);
                 if (!weather) {
-                  return <p className="text-gray-600">Données météo non disponibles pour cette date.</p>;
+                  return <p className="text-gray-600">{t('calendar.noDataForDate')}</p>;
                 }
                 
                 const conditions = analyzeSailingConditions(weather);
@@ -676,7 +665,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                       <div className="bg-gradient-to-br from-red-50 to-orange-50 p-4 rounded-lg">
                         <div className="flex items-center mb-2">
                           <Thermometer className="h-5 w-5 text-red-500 mr-2" />
-                          <span className="font-medium">Température</span>
+                          <span className="font-medium">{t('calendar.labels.temperature')}</span>
                         </div>
                         <div className="text-2xl font-bold text-gray-900">
                           {weather.temperature_2m_max.toFixed(1)}° / {weather.temperature_2m_min.toFixed(1)}°
@@ -686,21 +675,21 @@ const Calendar: React.FC<CalendarProps> = () => {
                       <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-lg">
                         <div className="flex items-center mb-2">
                           <Wind className="h-5 w-5 text-blue-500 mr-2" />
-                          <span className="font-medium">Vent</span>
+                          <span className="font-medium">{t('calendar.labels.wind')}</span>
                         </div>
                         <div className="flex flex-col text-gray-900">
                           <div className="flex items-center text-2xl font-bold">
                             <span className="mr-2">{Math.round(weather.wind_speed_10m_max)} km/h</span>
                             <span className="text-xl">{getWindDirectionIcon(weather.wind_direction_10m_dominant)}</span>
                           </div>
-                          <div className="text-sm opacity-80">Rafales: {Math.round(weather.wind_gusts_10m_max)} km/h</div>
+                          <div className="text-sm opacity-80">{t('calendar.labels.gusts')}: {Math.round(weather.wind_gusts_10m_max)} km/h</div>
                         </div>
                       </div>
                       
                       <div className="bg-gradient-to-br from-purple-50 to-indigo-50 p-4 rounded-lg">
                         <div className="flex items-center mb-2">
                           <Gauge className="h-5 w-5 text-purple-500 mr-2" />
-                          <span className="font-medium">Pression</span>
+                          <span className="font-medium">{t('calendar.legend.weather.pressure')}</span>
                         </div>
                         <div className="text-2xl font-bold text-gray-900">
                           {Math.round(weather.surface_pressure)} hPa
@@ -715,10 +704,10 @@ const Calendar: React.FC<CalendarProps> = () => {
                           {specialEvent || conditions.activity}
                         </h4>
                         <div className="text-sm opacity-90 font-medium">
-                          Conditions: {conditions.level === 'excellent' ? '🌟 Excellentes' : 
-                                         conditions.level === 'good' ? '✅ Bonnes' :
-                                         conditions.level === 'moderate' ? '⚠️ Modérées' :
-                                         conditions.level === 'difficult' ? '🔴 Difficiles' : '⚫ Dangereuses'}
+                          {t('calendar.labels.conditions')}: {conditions.level === 'excellent' ? `🌟 ${t('calendar.level.excellent')}` : 
+                                         conditions.level === 'good' ? `✅ ${t('calendar.level.good')}` :
+                                         conditions.level === 'moderate' ? `⚠️ ${t('calendar.level.moderate')}` :
+                                         conditions.level === 'difficult' ? `🔴 ${t('calendar.level.difficult')}` : `⚫ ${t('calendar.level.dangerous')}`}
                         </div>
                       </div>
                       <p className="text-lg font-medium">
@@ -726,10 +715,10 @@ const Calendar: React.FC<CalendarProps> = () => {
                       </p>
                       <div className="mt-3 flex items-center justify-between">
                         <div className="text-sm opacity-90">
-                          <span className="font-medium">Échelle Beaufort:</span> {conditions.beaufortScale} - {conditions.beaufortDescription}
+                          <span className="font-medium">{t('calendar.summary.beaufort')}:</span> {conditions.beaufortScale} - {conditions.beaufortDescription}
                         </div>
                         <div className="text-sm opacity-90">
-                          <span className="font-medium">Vent:</span> {Math.round(weather.wind_speed_10m_max)} km/h
+                          <span className="font-medium">{t('calendar.summary.windMax')}:</span> {Math.round(weather.wind_speed_10m_max)} km/h
                         </div>
                       </div>
                       {specialEvent && (
@@ -739,12 +728,12 @@ const Calendar: React.FC<CalendarProps> = () => {
                       )}
                     </div>
 
-                    {/* Analyse détaillée (winds, sun, visibility, etc.) */}
+                    {/* Detailed analysis (winds, sun, visibility, etc.) */}
                     <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200">
                       <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-xl font-bold text-gray-900">🔎 Analyse détaillée</h4>
+                        <h4 className="text-xl font-bold text-gray-900">🔎 {t('calendar.analysis.detailed')}</h4>
                         {weather.analysis && (
-                          <div className="text-sm text-gray-600">{new Date(weather.date).toLocaleDateString('fr-FR')}</div>
+                          <div className="text-sm text-gray-600">{new Date(weather.date).toLocaleDateString(locale)}</div>
                         )}
                       </div>
 
@@ -754,7 +743,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                           <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                             <div className="flex items-center mb-2">
                               <Wind className="h-5 w-5 text-blue-600 mr-2" />
-                              <span className="font-medium text-gray-900">Vent de la journée</span>
+                              <span className="font-medium text-gray-900">{t('calendar.analysis.wind.title')}</span>
                             </div>
                             <div className="space-y-1 text-gray-800">
                               <div className="text-lg font-semibold">
@@ -762,15 +751,15 @@ const Calendar: React.FC<CalendarProps> = () => {
                                 <span className="ml-2 text-sm text-gray-600">({Math.round(weather.analysis.windDirectionMean)}°)</span>
                               </div>
                               <div className="text-sm">
-                                <span className="font-medium">Variabilité:</span> ±{Math.round(weather.analysis.windVariability)}°
+                                <span className="font-medium">{t('calendar.analysis.wind.variability')}:</span> ±{Math.round(weather.analysis.windVariability)}°
                               </div>
                               <div className="text-sm">
-                                <span className="font-medium">Moyen:</span> {isFinite(weather.analysis.windMean) ? Math.round(weather.analysis.windMean) : '–'} km/h
+                                <span className="font-medium">{t('calendar.analysis.wind.mean')}:</span> {isFinite(weather.analysis.windMean) ? Math.round(weather.analysis.windMean) : '–'} km/h
                               </div>
                               <div className="text-sm">
-                                <span className="font-medium">Rafale max:</span> {isFinite(weather.analysis.windPeak) ? Math.round(weather.analysis.windPeak) : '–'} km/h
+                                <span className="font-medium">{t('calendar.analysis.wind.peak')}:</span> {isFinite(weather.analysis.windPeak) ? Math.round(weather.analysis.windPeak) : '–'} km/h
                                 {weather.analysis.windPeakTime && (
-                                  <span className="text-gray-600"> à {new Date(weather.analysis.windPeakTime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
+                                  <span className="text-gray-600"> {t('common.at')} {new Date(weather.analysis.windPeakTime).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                 )}
                               </div>
                               <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.wind}</div>
@@ -781,12 +770,12 @@ const Calendar: React.FC<CalendarProps> = () => {
                           <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                             <div className="flex items-center mb-2">
                               <span className="text-yellow-500 text-xl mr-2">☀️</span>
-                              <span className="font-medium text-gray-900">Lumière & Visibilité</span>
+                              <span className="font-medium text-gray-900">{t('calendar.analysis.lightVisibility.title')}</span>
                             </div>
                             <div className="space-y-1 text-gray-800">
-                              <div className="text-sm"><span className="font-medium">Heures ensoleillées:</span> {weather.analysis.sunnyHours}</div>
-                              <div className="text-sm"><span className="font-medium">Visibilité moyenne:</span> {isFinite(weather.analysis.visibilityAvg) ? `${Math.round(weather.analysis.visibilityAvg / 1000)} km` : '–'}</div>
-                              <div className="text-sm"><span className="font-medium">Humidité moyenne:</span> {isFinite(weather.analysis.humidityAvg) ? `${Math.round(weather.analysis.humidityAvg)}%` : '–'}</div>
+                              <div className="text-sm"><span className="font-medium">{t('calendar.analysis.lightVisibility.sunHours')}:</span> {weather.analysis.sunnyHours}</div>
+                              <div className="text-sm"><span className="font-medium">{t('calendar.analysis.lightVisibility.visibilityAvg')}:</span> {isFinite(weather.analysis.visibilityAvg) ? `${Math.round(weather.analysis.visibilityAvg / 1000)} km` : '–'}</div>
+                              <div className="text-sm"><span className="font-medium">{t('calendar.analysis.lightVisibility.humidityAvg')}:</span> {isFinite(weather.analysis.humidityAvg) ? `${Math.round(weather.analysis.humidityAvg)}%` : '–'}</div>
                               <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.overview}</div>
                             </div>
                           </div>
@@ -795,50 +784,17 @@ const Calendar: React.FC<CalendarProps> = () => {
                           <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
                             <div className="flex items-center mb-2">
                               <Thermometer className="h-5 w-5 text-red-500 mr-2" />
-                              <span className="font-medium text-gray-900">Température & Confort</span>
+                              <span className="font-medium text-gray-900">{t('calendar.analysis.tempComfort.title')}</span>
                             </div>
                             <div className="space-y-1 text-gray-800">
                               <div className="text-lg font-semibold">{weather.temperature_2m_max.toFixed(1)}° / {weather.temperature_2m_min.toFixed(1)}°</div>
-                              <div className="text-sm"><span className="font-medium">Amplitude thermique:</span> {isFinite(weather.analysis.thermalAmplitude) ? `${weather.analysis.thermalAmplitude.toFixed(1)}°` : '–'}</div>
+                              <div className="text-sm"><span className="font-medium">{t('calendar.analysis.tempComfort.thermalAmplitude')}:</span> {isFinite(weather.analysis.thermalAmplitude) ? `${weather.analysis.thermalAmplitude.toFixed(1)}°` : '–'}</div>
                               <div className="text-sm text-gray-700 mt-1">{weather.analysis.comments.comfort}</div>
                             </div>
                           </div>
                         </div>
                       ) : (
-                        <div className="text-gray-600">Analyse en cours de génération…</div>
-                      )}
-
-                      {/* Best periods (Matin / Après-midi / Soir) */}
-                      {weather.analysis?.bestPeriods && (
-                        <div className="mt-6">
-                          <div className="flex items-center mb-3">
-                            <span className="text-lg mr-2">🕒</span>
-                            <h5 className="font-semibold text-gray-900">Meilleures périodes</h5>
-                          </div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            {weather.analysis.bestPeriods.map((p, idx) => {
-                              const level = p.level;
-                              const ui = level === 'excellent' ? { bg: 'bg-green-500 text-white' } :
-                                         level === 'good' ? { bg: 'bg-green-600 text-white' } :
-                                         level === 'moderate' ? { bg: 'bg-orange-500 text-white' } :
-                                         level === 'difficult' ? { bg: 'bg-red-600 text-white' } :
-                                         { bg: 'bg-black text-white' };
-                              const label = level === 'excellent' ? 'Excellent' :
-                                            level === 'good' ? 'Bon' :
-                                            level === 'moderate' ? 'Modéré' :
-                                            level === 'difficult' ? 'Difficile' : 'Dangereux';
-                              return (
-                                <div key={idx} className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
-                                  <div className="flex items-center justify-between mb-1">
-                                    <div className="font-medium text-gray-900">{p.part}</div>
-                                    <span className={`text-xs px-2 py-1 rounded ${ui.bg}`}>{label}</span>
-                                  </div>
-                                  <div className="text-sm text-gray-700">{p.reason}</div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
+                        <div className="text-gray-600">{t('calendar.analysis.generating')}</div>
                       )}
 
                       {/* Intra-day windows timeline */}
@@ -846,7 +802,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                         <div className="mt-6">
                           <div className="flex items-center mb-3">
                             <span className="text-lg mr-2">📊</span>
-                            <h5 className="font-semibold text-gray-900">Évolution dans la journée</h5>
+                            <h5 className="font-semibold text-gray-900">{t('calendar.analysis.intradayEvolution')}</h5>
                           </div>
                           <div className="flex flex-col gap-2">
                             {weather.analysis.windows.map((w, idx) => {
@@ -856,12 +812,17 @@ const Calendar: React.FC<CalendarProps> = () => {
                                          level === 'moderate' ? { bg: 'bg-orange-500 text-white' } :
                                          level === 'difficult' ? { bg: 'bg-red-600 text-white' } :
                                          { bg: 'bg-black text-white' };
-                              const t = (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                              const fmtTime = (iso: string) => new Date(iso).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' });
                               return (
-                                <div key={idx} className={`flex items-center justify-between rounded-lg px-3 py-2 border ${level === 'dangerous' ? 'border-black' : 'border-gray-200'} bg-white`}> 
+                                <div key={idx} className={`flex items-center justify-between rounded-lg px-3 py-2 border ${level === 'dangerous' ? 'border-black' : 'border-gray-200'} bg-white`}>
                                   <div className="flex items-center gap-2">
-                                    <span className={`text-xs px-2 py-1 rounded ${ui.bg}`}>{w.label}</span>
-                                    <span className="text-sm text-gray-800">{t(w.start)} – {t(w.end)}</span>
+                                    <span className={`text-xs px-2 py-1 rounded ${ui.bg}`}>
+                                      {level === 'excellent' ? t('calendar.level.excellent') :
+                                       level === 'good' ? t('calendar.level.good') :
+                                       level === 'moderate' ? t('calendar.level.moderate') :
+                                       level === 'difficult' ? t('calendar.level.difficult') : t('calendar.level.dangerous')}
+                                    </span>
+                                    <span className="text-sm text-gray-800">{fmtTime(w.start)} – {fmtTime(w.end)}</span>
                                   </div>
                                   <div className="text-sm text-gray-700">{w.reason}</div>
                                 </div>
@@ -880,7 +841,7 @@ const Calendar: React.FC<CalendarProps> = () => {
               
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <button className="w-full bg-gradient-to-r from-ocean-500 to-ocean-600 text-white py-3 px-6 rounded-lg font-medium hover:from-ocean-600 hover:to-ocean-700 transition-all duration-300 transform hover:scale-105">
-                  🚤 Réserver cette date
+                  🚤 {t('calendar.cta.bookDate')}
                 </button>
               </div>
             </motion.div>

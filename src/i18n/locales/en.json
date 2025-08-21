@@ -501,7 +501,34 @@
         "gusts": "Gusts (km/h)"
       },
       "conditions": {
-        "title": "Conditions legend"
+        "title": "Conditions legend",
+        "tooltip": {
+          "excellent": {
+            "wind": "Light, steady breeze (Bft 1–2)",
+            "sky": "Clear to mostly clear sky",
+            "temp": "Comfortable temperatures"
+          },
+          "good": {
+            "wind": "Moderate regular wind (Bft 3–4)",
+            "sky": "Fair weather, few clouds",
+            "temp": "Pleasant temperature"
+          },
+          "moderate": {
+            "wind": "Fresh or irregular wind",
+            "gusts": "Gusts possible, variable",
+            "rain": "Occasional showers possible"
+          },
+          "difficult": {
+            "force": "Strong wind and rough sea",
+            "gusts": "Frequent strong gusts",
+            "showers": "Showers or unstable weather"
+          },
+          "dangerous": {
+            "force": "Very strong to storm-force wind",
+            "gusts": "Violent gusts",
+            "stayInPort": "Stay in port — navigation not recommended"
+          }
+        }
       }
     },
     "metrics": {
@@ -589,6 +616,37 @@
       }
     },
     "beaufort": {
+      "title": "Beaufort scale",
+      "infoTitle": "Reading the colors and gusts",
+      "colorsTitle": "Color code",
+      "colors": {
+        "range01": "Bft 0–1: Calm to very light",
+        "range23": "Bft 2–3: Favorable",
+        "range45": "Bft 4–5: Moderate",
+        "range67": "Bft 6–7: Difficult",
+        "range8plus": "Bft 8+: Very strong"
+      },
+      "gustsTitle": "Gusts indicator",
+      "gusts": {
+        "moderate": "Moderate gusts",
+        "difficult": "Strong gusts",
+        "dangerous": "Dangerous gusts"
+      },
+      "colorNote": "Color shows comfort level for sailing conditions.",
+      "localDirectionTitle": "Local wind families (Agde / Gulf of Lion)",
+      "local": {
+        "tramontane": "Tramontane (N–NW): offshore, gusty",
+        "marin": "Marin (E–SE): humid, swell",
+        "ponant": "Ponant / Cers (W): often gusty",
+        "levant": "Levant (E): easterly swell"
+      },
+      "current": "Current: Bft {{bft}} ({{desc}})",
+      "segmentAria": "Beaufort {{b}} — {{name}} — mean wind {{range}} km/h — gusts {{gust}}",
+      "forceLabel": "Bft {{b}} — {{name}}",
+      "meanWind": "Mean wind: {{range}} km/h",
+      "gustsLabel": "Gusts: {{gust}}",
+      "directionLabel": "Dominant direction: {{name}}",
+      "colorLabel": "Color: {{color}}",
       "names": {
         "0": "Calm",
         "1": "Light air",

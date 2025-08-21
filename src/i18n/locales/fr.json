@@ -4,6 +4,7 @@
     "extras": "Extras 🍷",
     "pricing": "Tarifs 💰",
     "contact": "Contact 📞",
+    "calendar": "📅 Calendrier",
     "book": "Réserver 🚤"
   },
   "hero": {
@@ -466,5 +467,249 @@
     "contact": "Contact 📞",
     "rights": "Tous droits réservés. ©",
     "specs": "Sangria 7m • 4 personnes max • Skipper professionnel 👨‍✈️"
+  },
+  "common": {
+    "collapse": "Replier",
+    "expand": "Déplier",
+    "noData": "Aucune donnée disponible.",
+    "at": "à"
+  },
+  "calendar": {
+    "ui": {
+      "title": "Calendrier & Réservations",
+      "subtitle": "Choisis ta date idéale avec la météo en temps réel !",
+      "locationForecast": "Météo Agde - 14 jours"
+    },
+    "hourlyValues": {
+      "title": "Valeurs horaires"
+    },
+    "currentWeather": {
+      "todayTitle": "Météo du jour",
+      "nextTitle": "Prochaine météo"
+    },
+    "labels": {
+      "conditions": "Conditions",
+      "temperature": "Température",
+      "wind": "Vent (km/h)",
+      "gusts": "Rafales",
+      "beaufort": "Beaufort"
+    },
+    "legend": {
+      "weather": {
+        "tempMaxMin": "Température max/min",
+        "wind": "Vent (km/h)",
+        "pressure": "Pression (hPa)",
+        "windDirection": "Direction vent",
+        "gusts": "Rafales (km/h)"
+      },
+      "conditions": {
+        "title": "Légende des conditions",
+        "tooltip": {
+          "excellent": {
+            "wind": "Petite brise régulière (Bft 1–2)",
+            "sky": "Ciel dégagé à peu nuageux",
+            "temp": "Températures confortables"
+          },
+          "good": {
+            "wind": "Vent modéré et régulier (Bft 3–4)",
+            "sky": "Temps clément, quelques nuages",
+            "temp": "Température agréable"
+          },
+          "moderate": {
+            "wind": "Vent soutenu ou irrégulier",
+            "gusts": "Rafales possibles, variables",
+            "rain": "Averses ponctuelles possibles"
+          },
+          "difficult": {
+            "force": "Vent fort et mer formée",
+            "gusts": "Rafales fréquentes et fortes",
+            "showers": "Averses ou temps instable"
+          },
+          "dangerous": {
+            "force": "Vent très fort à tempétueux",
+            "gusts": "Rafales violentes",
+            "stayInPort": "Rester au port — navigation déconseillée"
+          }
+        }
+      }
+    },
+    "metrics": {
+      "temperature": "Température (°C)",
+      "wind": "Vent (km/h)",
+      "gusts": "Rafales (km/h)",
+      "humidity": "Humidité (%)",
+      "pressure": "Pression (hPa)",
+      "visibility": "Visibilité (km)"
+    },
+    "analysis": {
+      "detailed": "Analyse détaillée",
+      "wind": {
+        "title": "Vent de la journée",
+        "variability": "Variabilité",
+        "mean": "Moyen",
+        "peak": "Rafale max"
+      },
+      "lightVisibility": {
+        "title": "Lumière & Visibilité",
+        "sunHours": "Heures ensoleillées",
+        "visibilityAvg": "Visibilité moyenne",
+        "humidityAvg": "Humidité moyenne"
+      },
+      "tempComfort": {
+        "title": "Température & Confort",
+        "thermalAmplitude": "Amplitude thermique"
+      },
+      "bestPeriods": {
+        "title": "Meilleures périodes"
+      },
+      "intradayEvolution": "Évolution dans la journée",
+      "generating": "Analyse en cours de génération…",
+      "comments": {
+        "wind": {
+          "highGusts": "Rafales fortes jusqu'à {{gmax}} km/h (≈ {{bft}} Bft)",
+          "strongPeaks": "Vent soutenu, pics à {{wmax}} km/h (≈ {{bft}} Bft)",
+          "moderate": "Vent modéré, moyen ~{{wmean}} km/h (≈ {{bft}} Bft)"
+        },
+        "comfort": {
+          "hotHumid": "Chaleur lourde, hydratation conseillée",
+          "hotVentilated": "Chaud mais ventilé, agréable en mer",
+          "coolLayer": "Températures fraîches, prévoyez une couche coupe-vent",
+          "overallGood": "Confort globalement bon"
+        },
+        "overview": {
+          "sunnyClear": "Belle journée lumineuse et dégagée",
+          "overcast": "Ciel couvert à nuageux, ensoleillement limité",
+          "mixed": "Alternance d’éclaircies et de passages nuageux"
+        }
+      }
+    },
+    "level": {
+      "excellent": "Excellent",
+      "good": "Bon",
+      "moderate": "Modéré",
+      "difficult": "Difficile",
+      "dangerous": "Dangereux"
+    },
+    "period": {
+      "morning": "Matin",
+      "afternoon": "Après-midi",
+      "evening": "Soir"
+    },
+    "cta": {
+      "bookDate": "Réserver cette date"
+    },
+    "summary": {
+      "beaufort": "Échelle de Beaufort",
+      "windMax": "Vent max"
+    },
+    "noDataForDate": "Données météo non disponibles pour cette date.",
+    "wind": {
+      "directions": {
+        "tramontane": "Tramontane (NW-N)",
+        "marin": "Marin (E-SE)",
+        "autan": "Autan (S-SW)",
+        "nord": "Nord",
+        "nordEst": "Nord-Est",
+        "est": "Est",
+        "sudEst": "Sud-Est",
+        "sud": "Sud",
+        "ouest": "Ouest",
+        "nordOuest": "Nord-Ouest"
+      }
+    },
+    "beaufort": {
+      "title": "Échelle de Beaufort",
+      "infoTitle": "Lecture des couleurs et des rafales",
+      "colorsTitle": "Code couleur",
+      "colors": {
+        "range01": "Bft 0–1 : Calme à très faible",
+        "range23": "Bft 2–3 : Favorable",
+        "range45": "Bft 4–5 : Modéré",
+        "range67": "Bft 6–7 : Difficile",
+        "range8plus": "Bft 8+ : Très fort"
+      },
+      "gustsTitle": "Indicateur des rafales",
+      "gusts": {
+        "moderate": "Rafales modérées",
+        "difficult": "Rafales fortes",
+        "dangerous": "Rafales dangereuses"
+      },
+      "colorNote": "La couleur indique le niveau de confort pour la navigation.",
+      "localDirectionTitle": "Familles de vents locaux (Agde / Golfe du Lion)",
+      "local": {
+        "tramontane": "Tramontane (N–NW) : vent de terre, rafaleux",
+        "marin": "Marin (E–SE) : humide, houle",
+        "ponant": "Ponant / Cers (W) : souvent rafaleux",
+        "levant": "Levant (E) : houle d’est"
+      },
+      "current": "Actuel : Bft {{bft}} ({{desc}})",
+      "segmentAria": "Beaufort {{b}} — {{name}} — vent moyen {{range}} km/h — rafales {{gust}}",
+      "forceLabel": "Bft {{b}} — {{name}}",
+      "meanWind": "Vent moyen : {{range}} km/h",
+      "gustsLabel": "Rafales : {{gust}}",
+      "directionLabel": "Direction dominante : {{name}}",
+      "colorLabel": "Couleur : {{color}}",
+      "names": {
+        "0": "Calme",
+        "1": "Très légère brise",
+        "2": "Légère brise",
+        "3": "Petite brise",
+        "4": "Jolie brise",
+        "5": "Bonne brise",
+        "6": "Vent frais",
+        "7": "Grand frais",
+        "8": "Coup de vent",
+        "9": "Fort coup de vent",
+        "10": "Tempête",
+        "11": "Violente tempête",
+        "12": "Ouragan"
+      }
+    },
+    "reasons": {
+      "dangerousGusts": "Rafales {{g}} km/h ({{bdesc}})",
+      "difficultWindShowers": "Vent fort/averses ({{bdesc}})",
+      "moderateDynamic": "Conditions dynamiques ({{bdesc}})",
+      "excellentBiseClear": "Bise agréable et ciel dégagé",
+      "goodRegularFair": "Vent régulier et temps clément",
+      "calmVeryLowWind": "Très peu de vent",
+      "goodFavorable": "Conditions favorables"
+    },
+    "activities": {
+      "dangerous": "⚠️ Navigation interdite",
+      "difficult": "🌊 Navigation experte",
+      "moderate": "⛵ Navigation sportive",
+      "excellent": "🏖️ Journée parfaite",
+      "good": "🌅 Navigation plaisir",
+      "calm": "🎣 Journée calme",
+      "default": "⛵ Navigation",
+      "desc": {
+        "dangerous": "Conditions dangereuses (rafales {{gmax}} km/h) - Restez au port ({{bdesc}})",
+        "difficult": "Réservé aux marins expérimentés ({{bdesc}})",
+        "moderate": "Conditions dynamiques ({{bdesc}})",
+        "excellent": "Idéal pour navigation + pique-nique à bord ({{bdesc}})",
+        "good": "Parfait pour une sortie voile détente ({{bdesc}})",
+        "calm": "Parfait pour la pêche ou détente au mouillage ({{bdesc}})",
+        "default": "Conditions favorables pour naviguer ({{bdesc}})"
+      }
+    },
+    "specialEvents": {
+      "holidays": {
+        "newYear": "🎊 Nouvel An",
+        "valentines": "💕 Saint-Valentin",
+        "laborDay": "🌸 Fête du Travail",
+        "victoryDay": "🇫🇷 Fête de la Victoire",
+        "bastilleDay": "🇫🇷 Fête Nationale",
+        "assumption": "⛪ Assomption",
+        "halloween": "🎃 Halloween",
+        "allSaints": "🕯️ Toussaint",
+        "armistice": "🇫🇷 Armistice",
+        "christmas": "🎄 Noël",
+        "newYearsEve": "🎆 Saint-Sylvestre"
+      },
+      "season": {
+        "high": "☀️ Haute saison voile",
+        "normal": "🌊 Saison voile"
+      }
+    }
   }
 }

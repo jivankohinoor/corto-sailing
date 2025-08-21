@@ -34,7 +34,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home', setCurrentPage })
     { href: '#extras', label: t('nav.extras'), page: 'home' as const },
     { href: '#tarifs', label: t('nav.pricing'), page: 'home' as const },
     { href: '#contact', label: t('nav.contact'), page: 'home' as const },
-    { href: '', label: '📅 Calendrier', page: 'calendar' as const }
+    { href: '', label: t('nav.calendar'), page: 'calendar' as const }
   ];
 
   return (
@@ -52,7 +52,7 @@ const Header: React.FC<HeaderProps> = ({ currentPage = 'home', setCurrentPage })
             <Anchor className="h-8 w-8 text-ocean-600" />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Corto Sailing</h1>
-              <p className="text-sm text-ocean-600 font-medium">Ton aventure maritime commence ici ! 🌊</p>
+              <p className="text-sm text-ocean-600 font-medium">{t('hero.tagline')}</p>
             </div>
           </motion.button>
 

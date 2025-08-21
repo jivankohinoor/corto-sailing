@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { fetchHourlyForDate } from '../services/weatherService';
+import { useTranslation } from 'react-i18next';
 
 export type MetricKey = 'temperature_2m' | 'wind_speed_10m' | 'wind_gusts_10m' | 'relative_humidity_2m' | 'pressure_msl' | 'visibility';
 
@@ -18,16 +19,18 @@ interface HourlySeries {
   visibility: number[];
 }
 
-const metricLabels: Record<MetricKey, string> = {
-  temperature_2m: 'Température (°C)',
-  wind_speed_10m: 'Vent (km/h)',
-  wind_gusts_10m: 'Rafales (km/h)',
-  relative_humidity_2m: 'Humidité (%)',
-  pressure_msl: 'Pression (hPa)',
-  visibility: 'Visibilité (km)'
-};
+const useMetricLabels = (t: (k: string) => string) => useMemo((): Record<MetricKey, string> => ({
+  temperature_2m: t('calendar.metrics.temperature'),
+  wind_speed_10m: t('calendar.metrics.wind'),
+  wind_gusts_10m: t('calendar.metrics.gusts'),
+  relative_humidity_2m: t('calendar.metrics.humidity'),
+  pressure_msl: t('calendar.metrics.pressure'),
+  visibility: t('calendar.metrics.visibility')
+}), [t]);
 
 const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
+  const { t } = useTranslation();
+  const metricLabels = useMetricLabels(t);
   const [open, setOpen] = useState(true);
   const [metric, setMetric] = useState<MetricKey>('temperature_2m');
   const [data, setData] = useState<HourlySeries | null>(null);
@@ -97,9 +100,9 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
   return (
     <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200">
       <div className="flex items-center justify-between mb-4">
-        <h4 className="text-xl font-bold text-gray-900">📈 Valeurs horaires</h4>
+        <h4 className="text-xl font-bold text-gray-900">📈 {t('calendar.hourlyValues.title')}</h4>
         <button onClick={() => setOpen(o => !o)} className="text-sm text-ocean-600 hover:underline">
-          {open ? 'Replier' : 'Déplier'}
+          {open ? t('common.collapse') : t('common.expand')}
         </button>
       </div>
 
@@ -149,7 +152,7 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
                 <polyline fill="none" stroke="#0ea5e9" strokeWidth="2" points={points} />
               </svg>
             ) : (
-              <div className="text-gray-600">Aucune donnée disponible.</div>
+              <div className="text-gray-600">{t('common.noData')}</div>
             )}
             <div className="mt-2 text-xs text-gray-600">{metricLabels[metric]}</div>
           </div>

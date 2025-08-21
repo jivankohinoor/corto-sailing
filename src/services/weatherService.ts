@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 export interface WeatherData {
   date: string;
   temperature_2m_max: number;
@@ -38,12 +40,12 @@ export interface DayWindow {
   start: string; // ISO time
   end: string;   // ISO time
   level: DayLevel;
-  label: string; // e.g., "Excellent", "Bon"
+  label: string; // localized (e.g., t('calendar.level.excellent'))
   reason: string;
 }
 
 export interface DayPeriodBest {
-  part: 'Matin' | 'Après-midi' | 'Soir';
+  part: string; // localized (e.g., t('calendar.period.morning'))
   level: DayLevel;
   reason: string;
 }
@@ -176,17 +178,18 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
     };
 
     const windNameFromDir = (deg: number): string => {
-      if (deg >= 290 || deg < 20) return 'Tramontane (NW-N)';
-      if (deg >= 40 && deg < 140) return 'Marin (E-SE)';
-      if (deg >= 200 && deg < 260) return 'Autan (S-SW)';
+      const t = i18n.t.bind(i18n);
+      if (deg >= 290 || deg < 20) return t('calendar.wind.directions.tramontane', { defaultValue: 'Tramontane (NW-N)' });
+      if (deg >= 40 && deg < 140) return t('calendar.wind.directions.marin', { defaultValue: 'Marin (E-SE)' });
+      if (deg >= 200 && deg < 260) return t('calendar.wind.directions.autan', { defaultValue: 'Autan (S-SW)' });
       // fallback by quadrant
-      if (deg < 40) return 'Nord';
-      if (deg < 90) return 'Nord-Est';
-      if (deg < 140) return 'Est';
-      if (deg < 200) return 'Sud-Est';
-      if (deg < 260) return 'Sud';
-      if (deg < 290) return 'Ouest';
-      return 'Nord-Ouest';
+      if (deg < 40) return t('calendar.wind.directions.nord', { defaultValue: 'Nord' });
+      if (deg < 90) return t('calendar.wind.directions.nordEst', { defaultValue: 'Nord-Est' });
+      if (deg < 140) return t('calendar.wind.directions.est', { defaultValue: 'Est' });
+      if (deg < 200) return t('calendar.wind.directions.sudEst', { defaultValue: 'Sud-Est' });
+      if (deg < 260) return t('calendar.wind.directions.sud', { defaultValue: 'Sud' });
+      if (deg < 290) return t('calendar.wind.directions.ouest', { defaultValue: 'Ouest' });
+      return t('calendar.wind.directions.nordOuest', { defaultValue: 'Nord-Ouest' });
     };
 
     const days = Object.keys(acc).sort();
@@ -219,38 +222,39 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
       const thermalAmplitude = isFinite(tmax) && isFinite(tmin) ? (tmax - tmin) : NaN;
 
       const windComment = (() => {
+        const t = i18n.t.bind(i18n);
         const b = getBeaufortScale(wmax);
-        if (gmax >= 70) return `Rafales fortes jusqu'à ${Math.round(gmax)} km/h (≈ ${b.scale} Bft)`;
-        if (wmax >= 30) return `Vent soutenu, pics à ${Math.round(wmax)} km/h (≈ ${b.scale} Bft)`;
-        return `Vent modéré, moyen ~${Math.round(wmean || 0)} km/h (≈ ${b.scale} Bft)`;
+        if (gmax >= 70) return t('calendar.analysis.comments.wind.highGusts', { gmax: Math.round(gmax), bft: b.scale, defaultValue: "Rafales fortes jusqu'à {{gmax}} km/h (≈ {{bft}} Bft)" });
+        if (wmax >= 30) return t('calendar.analysis.comments.wind.strongPeaks', { wmax: Math.round(wmax), bft: b.scale, defaultValue: 'Vent soutenu, pics à {{wmax}} km/h (≈ {{bft}} Bft)' });
+        return t('calendar.analysis.comments.wind.moderate', { wmean: Math.round(wmean || 0), bft: b.scale, defaultValue: 'Vent modéré, moyen ~{{wmean}} km/h (≈ {{bft}} Bft)' });
       })();
 
       const comfortComment = (() => {
+        const t = i18n.t.bind(i18n);
         const avgT = ((isFinite(tmax) ? tmax : 0) + (isFinite(tmin) ? tmin : 0)) / 2;
         const hum = humidityAvg;
-        if (tmax >= 30 && (hum ?? 0) >= 60) return 'Chaleur lourde, hydratation conseillée';
-        if (tmax >= 28 && (hum ?? 0) <= 40 && wmean >= 15) return 'Chaud mais ventilé, agréable en mer';
-        if (avgT < 20) return 'Températures fraîches, prévoyez une couche coupe-vent';
-        return 'Confort globalement bon';
+        if (tmax >= 30 && (hum ?? 0) >= 60) return t('calendar.analysis.comments.comfort.hotHumid', { defaultValue: 'Chaleur lourde, hydratation conseillée' });
+        if (tmax >= 28 && (hum ?? 0) <= 40 && wmean >= 15) return t('calendar.analysis.comments.comfort.hotVentilated', { defaultValue: 'Chaud mais ventilé, agréable en mer' });
+        if (avgT < 20) return t('calendar.analysis.comments.comfort.coolLayer', { defaultValue: 'Températures fraîches, prévoyez une couche coupe-vent' });
+        return t('calendar.analysis.comments.comfort.overallGood', { defaultValue: 'Confort globalement bon' });
       })();
 
       const overview = (() => {
+        const t = i18n.t.bind(i18n);
         const visKm = isFinite(visibilityAvg) ? (visibilityAvg / 1000) : NaN;
         const sun = sunnyHours;
-        if (sun >= 8 && (visKm >= 20 || isNaN(visKm))) return 'Belle journée lumineuse et dégagée';
-        if (sun <= 2) return 'Ciel couvert à nuageux, ensoleillement limité';
-        return 'Alternance d’éclaircies et de passages nuageux';
+        if (sun >= 8 && (visKm >= 20 || isNaN(visKm))) return t('calendar.analysis.comments.overview.sunnyClear', { defaultValue: 'Belle journée lumineuse et dégagée' });
+        if (sun <= 2) return t('calendar.analysis.comments.overview.overcast', { defaultValue: 'Ciel couvert à nuageux, ensoleillement limité' });
+        return t('calendar.analysis.comments.overview.mixed', { defaultValue: 'Alternance d’éclaircies et de passages nuageux' });
       })();
 
       // Intra-day analysis: hourly levels and optimal windows
       type Eval = { level: DayLevel; reason: string };
       const severityOrder: DayLevel[] = ['excellent', 'good', 'moderate', 'difficult', 'dangerous'];
-      const levelLabel = (lv: DayLevel) => (
-        lv === 'excellent' ? 'Excellent' :
-        lv === 'good' ? 'Bon' :
-        lv === 'moderate' ? 'Modéré' :
-        lv === 'difficult' ? 'Difficile' : 'Dangereux'
-      );
+      const levelLabel = (lv: DayLevel) => {
+        const t = i18n.t.bind(i18n);
+        return t(`calendar.level.${lv}`);
+      };
       const evalHour = (i: number): Eval => {
         const w = d.winds[i] ?? 0;
         const g = d.gusts[i] ?? 0;
@@ -258,19 +262,20 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
         const t = d.temps[i] ?? 20;
         const b = getBeaufortScale(w);
         const effectiveWind = Math.max(w, Math.round(0.7 * g));
+        const tfn = i18n.t.bind(i18n);
         // Dangerous
-        if (g >= 80 || b.scale >= 9) return { level: 'dangerous', reason: `Rafales ${Math.round(g)} km/h (${b.description})` };
+        if (g >= 80 || b.scale >= 9) return { level: 'dangerous', reason: tfn('calendar.reasons.dangerousGusts', { g: Math.round(g), bdesc: b.description, defaultValue: 'Rafales {{g}} km/h ({{bdesc}})' }) };
         // Difficult
-        if (b.scale >= 6 || g >= 70 || [80,81,82,85,86,95,96,99].includes(code)) return { level: 'difficult', reason: `Vent fort/averses (${b.description})` };
+        if (b.scale >= 6 || g >= 70 || [80,81,82,85,86,95,96,99].includes(code)) return { level: 'difficult', reason: tfn('calendar.reasons.difficultWindShowers', { bdesc: b.description, defaultValue: 'Vent fort/averses ({{bdesc}})' }) };
         // Moderate
-        if (b.scale >= 4 || effectiveWind >= 20 || g >= 50 || [61,63,65,71,73,75].includes(code)) return { level: 'moderate', reason: `Conditions dynamiques (${b.description})` };
+        if (b.scale >= 4 || effectiveWind >= 20 || g >= 50 || [61,63,65,71,73,75].includes(code)) return { level: 'moderate', reason: tfn('calendar.reasons.moderateDynamic', { bdesc: b.description, defaultValue: 'Conditions dynamiques ({{bdesc}})' }) };
         // Excellent
-        if (effectiveWind >= 6 && effectiveWind <= 14 && [0,1,2].includes(code) && t > 20) return { level: 'excellent', reason: 'Bise agréable et ciel dégagé' };
+        if (effectiveWind >= 6 && effectiveWind <= 14 && [0,1,2].includes(code) && t > 20) return { level: 'excellent', reason: tfn('calendar.reasons.excellentBiseClear', { defaultValue: 'Bise agréable et ciel dégagé' }) };
         // Good
-        if ((effectiveWind >= 10 && effectiveWind <= 20 && t > 14) || ([0,1,2].includes(code) && t >= 18)) return { level: 'good', reason: 'Vent régulier et temps clément' };
+        if ((effectiveWind >= 10 && effectiveWind <= 20 && t > 14) || ([0,1,2].includes(code) && t >= 18)) return { level: 'good', reason: tfn('calendar.reasons.goodRegularFair', { defaultValue: 'Vent régulier et temps clément' }) };
         // Calm defaults to moderate leisure
-        if (effectiveWind < 6 || b.scale <= 1) return { level: 'moderate', reason: 'Très peu de vent' };
-        return { level: 'good', reason: 'Conditions favorables' };
+        if (effectiveWind < 6 || b.scale <= 1) return { level: 'moderate', reason: tfn('calendar.reasons.calmVeryLowWind', { defaultValue: 'Très peu de vent' }) };
+        return { level: 'good', reason: tfn('calendar.reasons.goodFavorable', { defaultValue: 'Conditions favorables' }) };
       };
 
       // Build contiguous windows (06:00–22:00 local)
@@ -317,10 +322,11 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
 
       // Best per day part
       const bestPeriods: DayPeriodBest[] = (() => {
-        const parts: Array<{ name: 'Matin'|'Après-midi'|'Soir'; from: number; to: number; }> = [
-          { name: 'Matin', from: 6, to: 12 },
-          { name: 'Après-midi', from: 12, to: 18 },
-          { name: 'Soir', from: 18, to: 22 },
+        const t = i18n.t.bind(i18n);
+        const parts: Array<{ key: 'morning'|'afternoon'|'evening'; from: number; to: number; }> = [
+          { key: 'morning', from: 6, to: 12 },
+          { key: 'afternoon', from: 12, to: 18 },
+          { key: 'evening', from: 18, to: 22 },
         ];
         const pick = (from: number, to: number): DayPeriodBest => {
           let best: Eval | null = null;
@@ -332,11 +338,11 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
             else if (severityOrder.indexOf(e.level) < severityOrder.indexOf(best.level)) best = e;
           }
           const level = best ? best.level : 'moderate';
-          return { part: 'Matin', level, reason: best?.reason || 'Peu de données' } as DayPeriodBest;
+          return { part: t('calendar.period.morning', { defaultValue: 'Matin' }), level, reason: best?.reason || t('common.noData', { defaultValue: 'Aucune donnée disponible.' }) } as DayPeriodBest;
         };
         return parts.map(p => {
           const res = pick(p.from, p.to);
-          return { part: p.name, level: res.level, reason: res.reason };
+          return { part: t(`calendar.period.${p.key}`), level: res.level, reason: res.reason };
         });
       })();
       return {
@@ -380,19 +386,20 @@ export const fetchWeatherData = async (): Promise<WeatherData[]> => {
 
 // Convert wind speed to Beaufort scale
 const getBeaufortScale = (windSpeedKmh: number): { scale: number; description: string } => {
-  if (windSpeedKmh < 1) return { scale: 0, description: 'Calme' };
-  if (windSpeedKmh <= 5) return { scale: 1, description: 'Très légère brise' };
-  if (windSpeedKmh <= 11) return { scale: 2, description: 'Légère brise' };
-  if (windSpeedKmh <= 19) return { scale: 3, description: 'Petite brise' };
-  if (windSpeedKmh <= 28) return { scale: 4, description: 'Jolie brise' };
-  if (windSpeedKmh <= 38) return { scale: 5, description: 'Bonne brise' };
-  if (windSpeedKmh <= 49) return { scale: 6, description: 'Vent frais' };
-  if (windSpeedKmh <= 61) return { scale: 7, description: 'Grand frais' };
-  if (windSpeedKmh <= 74) return { scale: 8, description: 'Coup de vent' };
-  if (windSpeedKmh <= 88) return { scale: 9, description: 'Fort coup de vent' };
-  if (windSpeedKmh <= 102) return { scale: 10, description: 'Tempête' };
-  if (windSpeedKmh <= 117) return { scale: 11, description: 'Violente tempête' };
-  return { scale: 12, description: 'Ouragan' };
+  const t = i18n.t.bind(i18n);
+  if (windSpeedKmh < 1) return { scale: 0, description: t('calendar.beaufort.names.0', { defaultValue: 'Calme' }) };
+  if (windSpeedKmh <= 5) return { scale: 1, description: t('calendar.beaufort.names.1', { defaultValue: 'Très légère brise' }) };
+  if (windSpeedKmh <= 11) return { scale: 2, description: t('calendar.beaufort.names.2', { defaultValue: 'Légère brise' }) };
+  if (windSpeedKmh <= 19) return { scale: 3, description: t('calendar.beaufort.names.3', { defaultValue: 'Petite brise' }) };
+  if (windSpeedKmh <= 28) return { scale: 4, description: t('calendar.beaufort.names.4', { defaultValue: 'Jolie brise' }) };
+  if (windSpeedKmh <= 38) return { scale: 5, description: t('calendar.beaufort.names.5', { defaultValue: 'Bonne brise' }) };
+  if (windSpeedKmh <= 49) return { scale: 6, description: t('calendar.beaufort.names.6', { defaultValue: 'Vent frais' }) };
+  if (windSpeedKmh <= 61) return { scale: 7, description: t('calendar.beaufort.names.7', { defaultValue: 'Grand frais' }) };
+  if (windSpeedKmh <= 74) return { scale: 8, description: t('calendar.beaufort.names.8', { defaultValue: 'Coup de vent' }) };
+  if (windSpeedKmh <= 88) return { scale: 9, description: t('calendar.beaufort.names.9', { defaultValue: 'Fort coup de vent' }) };
+  if (windSpeedKmh <= 102) return { scale: 10, description: t('calendar.beaufort.names.10', { defaultValue: 'Tempête' }) };
+  if (windSpeedKmh <= 117) return { scale: 11, description: t('calendar.beaufort.names.11', { defaultValue: 'Violente tempête' }) };
+  return { scale: 12, description: t('calendar.beaufort.names.12', { defaultValue: 'Ouragan' }) };
 };
 
 // Analyze weather conditions for sailing activities
@@ -424,8 +431,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'dangerous',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '⚠️ Navigation interdite',
-      description: `Conditions dangereuses (rafales ${Math.round(wind_gusts_10m_max)} km/h) - Restez au port (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.dangerous', { defaultValue: '⚠️ Navigation interdite' }),
+      description: i18n.t('calendar.activities.desc.dangerous', { gmax: Math.round(wind_gusts_10m_max), bdesc: beaufort.description, defaultValue: 'Conditions dangereuses (rafales {{gmax}} km/h) - Restez au port ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -441,8 +448,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'difficult',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '🌊 Navigation experte',
-      description: `Réservé aux marins expérimentés (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.difficult', { defaultValue: '🌊 Navigation experte' }),
+      description: i18n.t('calendar.activities.desc.difficult', { bdesc: beaufort.description, defaultValue: 'Réservé aux marins expérimentés ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -459,8 +466,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'moderate',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '⛵ Navigation sportive',
-      description: `Conditions dynamiques (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.moderate', { defaultValue: '⛵ Navigation sportive' }),
+      description: i18n.t('calendar.activities.desc.moderate', { bdesc: beaufort.description, defaultValue: 'Conditions dynamiques ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -476,8 +483,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'excellent',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '🏖️ Journée parfaite',
-      description: `Idéal pour navigation + pique-nique à bord (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.excellent', { defaultValue: '🏖️ Journée parfaite' }),
+      description: i18n.t('calendar.activities.desc.excellent', { bdesc: beaufort.description, defaultValue: 'Idéal pour navigation + pique-nique à bord ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -492,8 +499,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'good',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '🌅 Navigation plaisir',
-      description: `Parfait pour une sortie voile détente (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.good', { defaultValue: '🌅 Navigation plaisir' }),
+      description: i18n.t('calendar.activities.desc.good', { bdesc: beaufort.description, defaultValue: 'Parfait pour une sortie voile détente ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -505,8 +512,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
       level: 'moderate',
       color: uiColor.text,
       bgColor: uiColor.bg,
-      activity: '🎣 Journée calme',
-      description: `Parfait pour la pêche ou détente au mouillage (${beaufort.description})`,
+      activity: i18n.t('calendar.activities.calm', { defaultValue: '🎣 Journée calme' }),
+      description: i18n.t('calendar.activities.desc.calm', { bdesc: beaufort.description, defaultValue: 'Parfait pour la pêche ou détente au mouillage ({{bdesc}})' }),
       beaufortScale: beaufort.scale,
       beaufortDescription: beaufort.description
     };
@@ -517,8 +524,8 @@ export const analyzeSailingConditions = (weather: WeatherData): SailingCondition
     level: 'good',
     color: uiColor.text,
     bgColor: uiColor.bg,
-    activity: '⛵ Navigation',
-    description: `Conditions favorables pour naviguer (${beaufort.description})`,
+    activity: i18n.t('calendar.activities.default', { defaultValue: '⛵ Navigation' }),
+    description: i18n.t('calendar.activities.desc.default', { bdesc: beaufort.description, defaultValue: 'Conditions favorables pour naviguer ({{bdesc}})' }),
     beaufortScale: beaufort.scale,
     beaufortDescription: beaufort.description
   };
@@ -530,27 +537,28 @@ export const getSpecialEvent = (date: string): string | null => {
   const month = dateObj.getMonth() + 1;
   const day = dateObj.getDate();
   
-  // French holidays and special events
+  // Holidays and special events (localized)
+  const t = i18n.t.bind(i18n);
   const specialEvents: Record<string, string> = {
-    '1-1': '🎊 Nouvel An',
-    '2-14': '💕 Saint-Valentin',
-    '5-1': '🌸 Fête du Travail',
-    '5-8': '🇫🇷 Fête de la Victoire',
-    '7-14': '🇫🇷 Fête Nationale',
-    '8-15': '⛪ Assomption',
-    '10-31': '🎃 Halloween',
-    '11-1': '🕯️ Toussaint',
-    '11-11': '🇫🇷 Armistice',
-    '12-25': '🎄 Noël',
-    '12-31': '🎆 Saint-Sylvestre'
+    '1-1': t('calendar.specialEvents.holidays.newYear', { defaultValue: '🎊 Nouvel An' }),
+    '2-14': t('calendar.specialEvents.holidays.valentines', { defaultValue: '💕 Saint-Valentin' }),
+    '5-1': t('calendar.specialEvents.holidays.laborDay', { defaultValue: '🌸 Fête du Travail' }),
+    '5-8': t('calendar.specialEvents.holidays.victoryDay', { defaultValue: '🇫🇷 Fête de la Victoire' }),
+    '7-14': t('calendar.specialEvents.holidays.bastilleDay', { defaultValue: '🇫🇷 Fête Nationale' }),
+    '8-15': t('calendar.specialEvents.holidays.assumption', { defaultValue: '⛪ Assomption' }),
+    '10-31': t('calendar.specialEvents.holidays.halloween', { defaultValue: '🎃 Halloween' }),
+    '11-1': t('calendar.specialEvents.holidays.allSaints', { defaultValue: '🕯️ Toussaint' }),
+    '11-11': t('calendar.specialEvents.holidays.armistice', { defaultValue: '🇫🇷 Armistice' }),
+    '12-25': t('calendar.specialEvents.holidays.christmas', { defaultValue: '🎄 Noël' }),
+    '12-31': t('calendar.specialEvents.holidays.newYearsEve', { defaultValue: '🎆 Saint-Sylvestre' })
   };
   
   // Summer sailing season
   if (month >= 6 && month <= 9) {
     if (month === 7 || month === 8) {
-      return '☀️ Haute saison voile';
+      return t('calendar.specialEvents.season.high', { defaultValue: '☀️ Haute saison voile' });
     }
-    return '🌊 Saison voile';
+    return t('calendar.specialEvents.season.normal', { defaultValue: '🌊 Saison voile' });
   }
   
   return specialEvents[`${month}-${day}`] || null;
