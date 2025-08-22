@@ -12,10 +12,10 @@ import {
   fetchWeatherData, 
   WeatherData, 
   getWeatherIcon, 
-  getWindDirectionIcon,
   analyzeSailingConditions,
   getSpecialEvent
 } from '../services/weatherService';
+import CompassIcon from './CompassIcon';
 import DailyValues from './DailyValues';
 import { useTranslation } from 'react-i18next';
 
@@ -168,7 +168,7 @@ const Calendar: React.FC<CalendarProps> = () => {
                     <span className="text-gray-500">{weather.temperature_2m_min.toFixed(1)}°</span>
                   </div>
                   <div className="flex items-center">
-                    <span className="text-sm">{getWindDirectionIcon(weather.wind_direction_10m_dominant)}</span>
+                    <CompassIcon degrees={weather.wind_direction_10m_dominant} size={16} className="text-gray-800" />
                   </div>
                 </div>
                 
@@ -680,7 +680,9 @@ const Calendar: React.FC<CalendarProps> = () => {
                         <div className="flex flex-col text-gray-900">
                           <div className="flex items-center text-2xl font-bold">
                             <span className="mr-2">{Math.round(weather.wind_speed_10m_max)} km/h</span>
-                            <span className="text-xl">{getWindDirectionIcon(weather.wind_direction_10m_dominant)}</span>
+                            <span className="ml-1">
+                              <CompassIcon degrees={weather.wind_direction_10m_dominant} size={20} className="text-gray-900" />
+                            </span>
                           </div>
                           <div className="text-sm opacity-80">{t('calendar.labels.gusts')}: {Math.round(weather.wind_gusts_10m_max)} km/h</div>
                         </div>
@@ -746,9 +748,10 @@ const Calendar: React.FC<CalendarProps> = () => {
                               <span className="font-medium text-gray-900">{t('calendar.analysis.wind.title')}</span>
                             </div>
                             <div className="space-y-1 text-gray-800">
-                              <div className="text-lg font-semibold">
-                                {weather.analysis.dominantWindName}
-                                <span className="ml-2 text-sm text-gray-600">({Math.round(weather.analysis.windDirectionMean)}°)</span>
+                              <div className="text-lg font-semibold flex items-center gap-2">
+                                <CompassIcon degrees={weather.analysis.windDirectionMean} size={20} className="text-gray-800" showCardinal />
+                                <span>{weather.analysis.dominantWindName}</span>
+                                <span className="ml-1 text-sm text-gray-600">({Math.round(weather.analysis.windDirectionMean)}°)</span>
                               </div>
                               <div className="text-sm">
                                 <span className="font-medium">{t('calendar.analysis.wind.variability')}:</span> ±{Math.round(weather.analysis.windVariability)}°
