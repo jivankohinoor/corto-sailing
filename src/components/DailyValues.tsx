@@ -53,8 +53,8 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
     load();
   }, [date]);
 
-  const { points, xTicks, yTicks, dims } = useMemo(() => {
-    if (!data) return { points: '', xTicks: [] as {x:number,label:string}[], yTicks: [] as {y:number,label:string}[], dims: {W:540,H:220,M:{left:40,right:12,top:12,bottom:28}} };
+  const { points, xTicks, yTicks, dims, dirIcons } = useMemo(() => {
+    if (!data) return { points: '', xTicks: [] as {x:number,label:string}[], yTicks: [] as {y:number,label:string}[], dims: {W:540,H:220,M:{left:40,right:12,top:12,bottom:28}}, dirIcons: [] as {x:number,y:number,angle:number,hour:number}[] };
     const W = 540, H = 220, M = { left: 40, right: 12, top: 12, bottom: 28 };
     const innerW = W - M.left - M.right;
     const innerH = H - M.top - M.bottom;
@@ -94,7 +94,20 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
         xTicksArr.push({ x: xScale(i), label: `${String(hh).padStart(2,'0')}h` });
       }
     }
-    return { points: pts, xTicks: xTicksArr, yTicks: yTicksArr, dims: { W, H, M } };
+    // wind direction icons overlay when wind speed selected
+    const dirIconsArr: { x: number; y: number; angle: number; hour: number }[] = [];
+    if (metric === 'wind_speed_10m') {
+      for (let i = 0; i < n; i++) {
+        const hh = Number(data.time[i].split('T')[1]?.slice(0,2) || '0');
+        if (hh % 3 === 0) {
+          const x = xScale(i);
+          const y = yScale(series[i]) - 10; // place slightly above the speed point
+          const angle = (data.wind_direction_10m[i] ?? 0);
+          dirIconsArr.push({ x, y, angle, hour: hh });
+        }
+      }
+    }
+    return { points: pts, xTicks: xTicksArr, yTicks: yTicksArr, dims: { W, H, M }, dirIcons: dirIconsArr };
   }, [data, metric]);
 
   return (
@@ -150,11 +163,23 @@ const DailyValues: React.FC<DailyValuesProps> = ({ date }) => {
                 ))}
                 {/* line */}
                 <polyline fill="none" stroke="#0ea5e9" strokeWidth="2" points={points} />
+                {/* wind direction icons overlay on wind speed */}
+                {dirIcons.length > 0 && dirIcons.map((d, idx) => (
+                  <g key={`dir${idx}`} transform={`translate(${d.x}, ${d.y}) rotate(${(d.angle + 180) % 360})`} aria-label={`${t('calendar.legend.weather.windDirection')} ${String(d.hour).padStart(2,'0')}h`}>
+                    {/* arrow: triangle pointing up before rotation */}
+                    <polygon points="0,-6 4,4 -4,4" fill="#374151" opacity="0.85" />
+                  </g>
+                ))}
               </svg>
             ) : (
               <div className="text-gray-600">{t('common.noData')}</div>
             )}
             <div className="mt-2 text-xs text-gray-600">{metricLabels[metric]}</div>
+            {metric === 'wind_speed_10m' && (
+              <div className="mt-1 text-[10px] text-gray-500">{t('calendar.legend.weather.windDirection')}: 
+                <span className="ml-1">▲</span> {t('calendar.legend.weather.windDirection')} (3h)
+              </div>
+            )}
           </div>
         </div>
       )}
