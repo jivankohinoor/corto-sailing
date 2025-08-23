@@ -38,6 +38,72 @@ const Calendar: React.FC<CalendarProps> = () => {
     return { bg: 'bg-black', text: 'text-white' };
   };
 
+  // Map qualitative level to UI classes for small pills
+  const levelPillClass = (level: 'excellent' | 'good' | 'moderate' | 'difficult' | 'dangerous') => {
+    switch (level) {
+      case 'excellent':
+        return 'bg-green-500 text-white';
+      case 'good':
+        return 'bg-green-600 text-white';
+      case 'moderate':
+        return 'bg-orange-500 text-white';
+      case 'difficult':
+        return 'bg-red-600 text-white';
+      case 'dangerous':
+      default:
+        return 'bg-black text-white';
+    }
+  };
+
+  // Map level to bar color
+  const levelBarClass = (level: 'excellent' | 'good' | 'moderate' | 'difficult' | 'dangerous' | 'none') => {
+    switch (level) {
+      case 'excellent':
+        return 'bg-green-500';
+      case 'good':
+        return 'bg-green-600';
+      case 'moderate':
+        return 'bg-orange-500';
+      case 'difficult':
+        return 'bg-red-600';
+      case 'dangerous':
+        return 'bg-black';
+      default:
+        return 'bg-gray-300';
+    }
+  };
+
+  // Build timeline segments from 06:00 to 22:00
+  const buildTimelineSegments = (windows: Array<{ start: string; end: string; level: any; reason: string }>, dateStr: string) => {
+    const startDay = new Date(`${dateStr}T06:00:00`);
+    const endDay = new Date(`${dateStr}T22:00:00`);
+    const totalMin = (endDay.getTime() - startDay.getTime()) / 60000; // 960
+    type Seg = { from: Date; to: Date; level: 'excellent'|'good'|'moderate'|'difficult'|'dangerous'|'none'; reason?: string };
+    const segs: Seg[] = [];
+    let cursor = new Date(startDay);
+    const clamp = (d: Date) => new Date(Math.min(Math.max(d.getTime(), startDay.getTime()), endDay.getTime()));
+    // Sort by start
+    const sorted = [...windows].sort((a,b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+    for (const w of sorted) {
+      let ws = clamp(new Date(w.start));
+      let we = clamp(new Date(w.end));
+      if (we <= startDay || ws >= endDay || we <= ws) continue;
+      if (ws > cursor) {
+        segs.push({ from: new Date(cursor), to: new Date(ws), level: 'none' });
+      }
+      segs.push({ from: ws, to: we, level: w.level, reason: w.reason });
+      cursor = new Date(Math.max(cursor.getTime(), we.getTime()));
+    }
+    if (cursor < endDay) segs.push({ from: cursor, to: endDay, level: 'none' });
+    // Map to width percentages
+    return segs.map(s => ({
+      widthPct: Math.max(0.5, ((s.to.getTime() - s.from.getTime()) / 60000) / totalMin * 100),
+      level: s.level,
+      reason: s.reason,
+      label: `${String(s.from.getHours()).padStart(2,'0')}h–${String(s.to.getHours()).padStart(2,'0')}h`
+    }));
+  };
+
   useEffect(() => {
     const loadWeatherData = async () => {
       setLoading(true);
@@ -286,6 +352,25 @@ const Calendar: React.FC<CalendarProps> = () => {
                     <div className="text-xl font-bold mb-1">{conditions.activity}</div>
                     <div className="text-sm opacity-90">{conditions.beaufortDescription}</div>
                   </div>
+                  {/* Best periods summary (morning / afternoon / evening) */}
+                  {currentWeather.analysis?.bestPeriods && currentWeather.analysis.bestPeriods.length > 0 && (
+                    <div className="mt-4">
+                      <div className="text-sm font-semibold mb-2">{t('calendar.ui.bestPeriods', { defaultValue: 'Meilleures périodes' })}</div>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {currentWeather.analysis.bestPeriods.map((p, idx) => (
+                          <span
+                            key={`bp-${idx}`}
+                            className={`px-2.5 py-1 rounded-full text-xs font-medium shadow-sm ${levelPillClass(p.level)}`}
+                            title={p.reason}
+                          >
+                            {/* part already localized in service via t('calendar.period.*') */}
+                            {p.part}: {t(`calendar.level.${p.level}`)}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {/* Hourly timeline removed from main card; now shown in selected-date summary card below */}
                 </motion.div>
               );
             }
@@ -729,6 +814,36 @@ const Calendar: React.FC<CalendarProps> = () => {
                         </p>
                       )}
                     </div>
+
+                    {/* Compact hourly timeline for the selected day */}
+                    {weather.analysis?.windows && weather.analysis.windows.length > 0 && (
+                      <div className="p-4 rounded-lg bg-white border border-gray-200 shadow-sm">
+                        <div className="text-sm font-semibold text-gray-900 mb-2">{t('calendar.ui.hourlyTimeline', { defaultValue: 'Évolution dans la journée' })}</div>
+                        {(() => {
+                          const segs = buildTimelineSegments(weather.analysis!.windows as any, weather.date);
+                          return (
+                            <div>
+                              <div className="flex w-full h-3 rounded-md overflow-hidden bg-gray-100 border border-gray-300">
+                                {segs.map((s, i) => (
+                                  <div
+                                    key={`sel-seg-${i}`}
+                                    className={`${levelBarClass(s.level)} h-full`}
+                                    style={{ width: `${s.widthPct}%` }}
+                                    title={`${t(`calendar.level.${s.level}`, { defaultValue: s.level })} • ${s.label}${s.reason ? ` • ${s.reason}` : ''}`}
+                                  />
+                                ))}
+                              </div>
+                              <div className="flex justify-between text-[10px] text-gray-700 mt-1">
+                                <span>06h</span>
+                                <span>12h</span>
+                                <span>18h</span>
+                                <span>22h</span>
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    )}
 
                     {/* Detailed analysis (winds, sun, visibility, etc.) */}
                     <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white border border-gray-200">
